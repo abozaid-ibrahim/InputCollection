@@ -13,7 +13,6 @@ final class CollectionHeader: UIView {
     static let identifier = "CollectionHeader"
 
     var items: [String] = []
-
     lazy var contentContainer: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .fill
@@ -27,12 +26,20 @@ final class CollectionHeader: UIView {
         let label = UILabel()
         label.textAlignment = .center
         label.text = title
-        label.textColor = .label
+        if #available(iOS 13.0, *) {
+            label.textColor = .label
+        } else {
+            label.textColor = .black
+        }
         return label
     }
 
     private func setup() {
-        backgroundColor = .systemGray6
+        if #available(iOS 13.0, *) {
+            backgroundColor = .systemGray6
+        } else {
+            backgroundColor = .gray
+        }
         addSubview(contentContainer)
         contentContainer.setConstrainsEqualToParentEdges()
         for string in items {
