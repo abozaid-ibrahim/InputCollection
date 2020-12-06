@@ -22,7 +22,8 @@ extension CollectionController: UICollectionViewDataSource, UICollectionViewDele
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditableCollectionCell.reuseIdentifier, for: indexPath) as! EditableCollectionCell
         cell.set(text: items[indexPath.row],
                  onDoubleTap: {
-                     print(">>>Item changed")
+                     HeightEditor.shared.setRowExpanded(for: indexPath, expand: true)
+                     self.reloadRow(row: indexPath.row)
                  })
 
         cell.textView.tag = indexPath.row
@@ -35,15 +36,11 @@ extension CollectionController: UICollectionViewDataSource, UICollectionViewDele
               let cell = cell as? EditableCollectionCell else { return }
         cell.textView.becomeFirstResponder()
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(">>Did select row")
-    }
 }
 
 extension CollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let maxHeight = heights[indexPath.row / 3].max() ?? 0
-        return .init(width: collectionView.bounds.width / 3, height: maxHeight + 10)
+        return .init(width: collectionView.bounds.width / 3, height: HeightEditor.shared.height(for: indexPath))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

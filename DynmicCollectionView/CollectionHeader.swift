@@ -11,7 +11,7 @@ import SwiftUI
 import UIKit
 final class CollectionHeader: UIView {
     static let identifier = "CollectionHeader"
-
+    let doubleClick: Observable<Bool> = .init(false)
     var items: [String] = []
     lazy var contentContainer: UIStackView = {
         let stack = UIStackView()
@@ -46,6 +46,18 @@ final class CollectionHeader: UIView {
             let label = newTitleLabel(with: string)
             contentContainer.addArrangedSubview(label)
         }
+        enableDoubleTap()
+    }
+
+    private func enableDoubleTap() {
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didDoubleTap(_:)))
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        doubleTapRecognizer.numberOfTouchesRequired = 1
+        addGestureRecognizer(doubleTapRecognizer)
+    }
+
+    @objc private func didDoubleTap(_ sender: UITapGestureRecognizer) {
+        doubleClick.next(true)
     }
 
     override init(frame: CGRect) {

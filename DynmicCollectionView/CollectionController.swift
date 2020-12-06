@@ -11,9 +11,7 @@ import UIKit
 
 final class CollectionController: UIViewController {
     var items: [String] = ["a", "b", "c"]
-
-    var heights: [[CGFloat]] = [[33, 44, 4]]
-     var currentEditingIndex = -1
+    var currentEditingIndex = -1
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -28,6 +26,12 @@ final class CollectionController: UIViewController {
         let view = CollectionHeader(with: ["Name", "Title", "Description"])
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        view.doubleClick.subscribe {
+            if $0 {
+                HeightEditor.shared.expandAllCells(false)
+                self.collectionView.reloadData()
+            }
+        }
         return view
     }()
 
@@ -52,38 +56,39 @@ final class CollectionController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
+        prepareCollection()
+    }
+
+    private func prepareCollection() {
+        view.addSubview(contentContainer)
+        contentContainer.setConstrainsEqualToSafeArea()
         collectionView.register(EditableCollectionCell.self,
                                 forCellWithReuseIdentifier: EditableCollectionCell.reuseIdentifier)
         collectionView.backgroundColor = .brown
         collectionView.reloadData()
     }
-
-    private func setup() {
-        view.addSubview(contentContainer)
-        contentContainer.setConstrainsEqualToParentEdges()
-    }
 }
 
 extension CollectionController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        let fixedWidth = textView.frame.size.width
-        let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        let newSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width,
+                                                   height: CGFloat.greatestFiniteMagnitude))
         let index = textView.tag
         currentEditingIndex = index
-
         items[index] = textView.text
-        let section = index / 3
-        let column = index % 3
-        if heights[section][column] != newSize.height {
-            heights[section][column] = newSize.height
-            let items = [IndexPath(row: section, section: 0), IndexPath(row: section + 1, section: 0), IndexPath(row: section + 2, section: 0)]
-            UIView.performWithoutAnimation {
-                collectionView.reloadItems(at: items)
-            }
+        HeightEditor.shared.set(height: newSize.height,
+                                for: IndexPath(row: index, section: 0))
+        reloadRow(row: index)
+    }
+
+    func reloadRow(row: Int) {
+        UIView.performWithoutAnimation {
+            let row = row / 3
+            collectionView.reloadItems(at: [row, row + 1, row + 2].asIndexPaths)
         }
     }
 }
+
 @available(iOS 13.0.0, *)
 struct CollectionControllerPreview: PreviewProvider {
     static var previews: some View {

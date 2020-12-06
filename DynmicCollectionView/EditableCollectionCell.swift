@@ -91,6 +91,33 @@ final class EditableCollectionCell: UICollectionViewCell {
         textView.addGestureRecognizer(doubleTapRecognizer)
 
         singleTapRecognizer.require(toFail: doubleTapRecognizer)
+
+        let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
+        textView.addGestureRecognizer(pinchRecognizer)
+    }
+
+    private var lastScale: CGFloat = 1
+    @objc func handlePinch(_ sender: UIPinchGestureRecognizer) {
+        if sender.state == .began {
+            lastScale = 1.0
+        }
+        switch sender.state {
+        case .began:
+            lastScale = 1
+        case .ended:
+            let scale = 1.0 - (lastScale - sender.scale)
+            layer.setAffineTransform(CGAffineTransform(scaleX: self.lastScale, y: scale))
+        case .possible:
+            print("changed")
+        case .changed:
+            print("changed")
+        case .cancelled:
+            print("changed")
+        case .failed:
+            print("changed")
+        @unknown default:
+            print("changed")
+        }
     }
 
     @objc func didDoubleTap(_ sender: UITapGestureRecognizer) {
@@ -104,12 +131,12 @@ final class EditableCollectionCell: UICollectionViewCell {
     }
 }
 
-//extension EditableCollectionCell: UIGestureRecognizerDelegate {
+// extension EditableCollectionCell: UIGestureRecognizerDelegate {
 //    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 //        print(">> \(gestureRecognizer) \n== \(otherGestureRecognizer)")
 //        return true
 //    }
-//}
+// }
 
 @available(iOS 13.0.0, *)
 struct Cell_Preview: PreviewProvider {
