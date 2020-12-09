@@ -32,11 +32,11 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
                      case .began, .changed:
                          self.animator.animate(cell: cell, at: indexPath, with: recognizer.scale)
                      case .ended:
-                         self.reloadRow(row: indexPath.row)
+                        self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
+                        self.collectionView.reloadData()//reloadRow(row: indexPath.row)
                      default:
                          print("")
                      }
-                     print("Order>>3 ")
                  })
 
         cell.textView.tag = indexPath.row
@@ -53,7 +53,7 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
 
 extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: heightEditor.columnWidth(for: indexPath) - 1, height: heightEditor.height(for: indexPath))
+        return self.heightEditor.cellSize(for:indexPath)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

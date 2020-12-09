@@ -8,11 +8,11 @@
 
 import Foundation
 import UIKit
+
 struct Measures {
-    static let minimuimRowHeight: CGFloat = 60
     static let columnsCount = 3
     static let defaultRowHeight: CGFloat = 730
-    static let defaultColumnWidth: CGFloat = 80
+    static let defaultColumnWidth: CGFloat = 100
 }
 
 final class CollectionMeasures {
@@ -35,12 +35,12 @@ final class CollectionMeasures {
 
     func height(for index: IndexPath) -> CGFloat {
         guard expandedModeEnabled else {
-            return Measures.minimuimRowHeight
+            return Measures.defaultRowHeight
         }
         guard let itemExist = forcedCollapseRows[row(for: index)] else {
             return heightList[row(for: index)].max() ?? 0
         }
-        return itemExist ? Measures.minimuimRowHeight : heightList[row(for: index)].max() ?? 0
+        return itemExist ? Measures.defaultRowHeight : heightList[row(for: index)].max() ?? 0
     }
 
     func set(height: CGFloat, for position: Int) -> Bool {
@@ -75,21 +75,16 @@ final class CollectionMeasures {
         return (newWidth <= maxWidth) && (newWidth >= minWidth)
     }
 
-    
-
     func updateCellSizeScale(for indexPath: IndexPath, scale: CGFloat) -> Bool {
         expandedModeEnabled = true
-        let h = height(for: indexPath)
         let col = column(for: indexPath)
         var newWidth = columnWidths[col] * scale
-//        print(">>HS \(h * scale)")
 
         let maxWidth = allowedWidth(for: col)
         newWidth = newWidth <= maxWidth ? newWidth : maxWidth
 
         let minWidth = columnMinimuimWidth[col]
         newWidth = newWidth >= minWidth ? newWidth : minWidth
-        print(">>WS \(newWidth) ")
         for i in 0 ..< columnWidths.count {
             if col == i {
                 columnWidths[i] = newWidth
@@ -97,8 +92,7 @@ final class CollectionMeasures {
                 columnWidths[i] = (screenWidth - newWidth) / CGFloat(Measures.columnsCount - 1)
             }
         }
-        print("Widths\(columnWidths)")
-
+//        let h = height(for: indexPath)
 //        set(height: h * scale, for: indexPath.row)
         return true
     }
@@ -121,5 +115,10 @@ final class CollectionMeasures {
     func indexPathsInTheSameRow(for index: Int) -> [IndexPath] {
         let base = index - (index % 3)
         return (0 ..< Measures.columnsCount).map { IndexPath(row: $0 + base, section: 0) }
+    }
+
+    func cellSize(for indexPath: IndexPath) -> CGSize {
+        return .init(width: columnWidth(for: indexPath) - 0.01,
+                     height: height(for: indexPath))
     }
 }

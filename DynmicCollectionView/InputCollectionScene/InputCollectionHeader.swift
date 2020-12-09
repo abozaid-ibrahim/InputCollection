@@ -9,23 +9,32 @@
 import Foundation
 import SwiftUI
 import UIKit
-final class InputCollectionHeader: UIView {
+
+protocol InputCollectionHeaderType {
+}
+
+final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     static let identifier = "InputCollectionHeader"
     let doubleClick: Observable<Bool> = .init(false)
     var items: [String] = []
-    lazy var contentContainer: UIStackView = {
+
+    lazy private var contentContainer: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .fill
         stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 1
+        stack.distribution = .fill
         return stack
     }()
 
+    private let widthConstrainID = "width"
     private func newTitleLabel(with title: String) -> UIView {
         let label = UILabel()
         label.textAlignment = .center
         label.text = title
+        label.translatesAutoresizingMaskIntoConstraints = false
+        let const = label.widthAnchor.constraint(equalToConstant: bounds.width / 3)
+        const.identifier = widthConstrainID
+        const.isActive = true
         if #available(iOS 13.0, *) {
             label.textColor = .label
         } else {
@@ -42,11 +51,23 @@ final class InputCollectionHeader: UIView {
         }
         addSubview(contentContainer)
         contentContainer.setConstrainsEqualToParentEdges()
-        for string in items {
-            let label = newTitleLabel(with: string)
+        for index in 0 ..< items.count {
+            let label = newTitleLabel(with: items[index])
             contentContainer.addArrangedSubview(label)
         }
         enableDoubleTap()
+    }
+
+    func updateLabelsWidth(with widths: [CGFloat]) {
+        var index = 0
+        for label in contentContainer.arrangedSubviews {
+            guard let widthConstrain = label.constraints.first(where: { $0.identifier == widthConstrainID }) else {
+                continue
+            }
+            widthConstrain.constant = widths[index]
+            index += 1
+        }
+        layoutIfNeeded()
     }
 
     private func enableDoubleTap() {

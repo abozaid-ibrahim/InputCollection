@@ -17,20 +17,7 @@ final class InputCollectionCell: UICollectionViewCell {
     private var doubleTapEvent: DoubleTapEvent?
     let reloadCell: Observable<Bool> = .init(false)
 
-    lazy var textView: UITextView = {
-        buildTextView()
-    }()
-
-    lazy var contentContainer: UIStackView = {
-        let stack = UIStackView()
-        stack.alignment = .fill
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.spacing = 1
-        return stack
-    }()
-
-    private func buildTextView() -> UITextView {
+    private(set) lazy var textView: UITextView = {
         let view = UITextView()
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
@@ -43,9 +30,8 @@ final class InputCollectionCell: UICollectionViewCell {
         view.alwaysBounceHorizontal = false
         view.gestureRecognizers = nil
         view.isUserInteractionEnabled = true
-
         return view
-    }
+    }()
 
     func set(text: String,
              onDoubleTap: @escaping DoubleTapEvent,
@@ -80,7 +66,6 @@ private extension InputCollectionCell {
         }
         contentView.addSubview(textView)
         textView.setConstrainsEqualToParentEdges(top: 2, bottom: 2, leading: 2, trailing: 2)
-//        contentContainer.addArrangedSubview(textView1)
         addDoubleTap()
     }
 
@@ -105,16 +90,11 @@ private extension InputCollectionCell {
     }
 
     @objc func handlePinch(_ recognizer: UIPinchGestureRecognizer) {
-        print("Order>>1 ")
         pinchExpandUpdater?(recognizer)
-        switch recognizer.state {
-        case .ended:
-            reloadCell.next(true)
-        default:
-            print("")
-        }
         recognizer.scale = 1.0
-        print("Order>>4 ")
+        if recognizer.state == .ended {
+            reloadCell.next(true)
+        }
     }
 
     @objc func didDoubleTap(_ sender: UITapGestureRecognizer) {
