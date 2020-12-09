@@ -28,11 +28,11 @@ final class InputCollectionController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 60).isActive = true
         view.doubleClick.subscribe { [weak self] in
-            guard let self = self else { return }
-            if $0 {
-                self.heightEditor.expandAllCells(false)
-                self.collectionView.reloadData()
-            }
+            guard let self = self,
+                  $0 >= 0 else { return }
+            self.heightEditor.squeezeColumn(of: $0, squeeze: true)
+            self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
+            self.collectionView.reloadData()
         }
         return view
     }()

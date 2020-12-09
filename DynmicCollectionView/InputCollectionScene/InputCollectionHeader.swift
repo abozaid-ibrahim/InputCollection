@@ -15,10 +15,10 @@ protocol InputCollectionHeaderType {
 
 final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     static let identifier = "InputCollectionHeader"
-    let doubleClick: Observable<Bool> = .init(false)
+    let doubleClick: Observable<Int> = .init(-1)
     var items: [String] = []
 
-    lazy private var contentContainer: UIStackView = {
+    private lazy var contentContainer: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .fill
         stack.axis = .horizontal
@@ -27,9 +27,10 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     }()
 
     private let widthConstrainID = "width"
-    private func newTitleLabel(with title: String) -> UIView {
+    private func newTitleLabel(with title: String) -> UILabel {
         let label = UILabel()
         label.textAlignment = .center
+        label.isUserInteractionEnabled = true
         label.text = title
         label.translatesAutoresizingMaskIntoConstraints = false
         let const = label.widthAnchor.constraint(equalToConstant: bounds.width / 3)
@@ -53,9 +54,10 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         contentContainer.setConstrainsEqualToParentEdges()
         for index in 0 ..< items.count {
             let label = newTitleLabel(with: items[index])
+            label.tag = index
+            enableDoubleTap(for: label)
             contentContainer.addArrangedSubview(label)
         }
-        enableDoubleTap()
     }
 
     func updateLabelsWidth(with widths: [CGFloat]) {
@@ -70,15 +72,16 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         layoutIfNeeded()
     }
 
-    private func enableDoubleTap() {
+    private func enableDoubleTap(for label: UILabel) {
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didDoubleTap(_:)))
         doubleTapRecognizer.numberOfTapsRequired = 2
         doubleTapRecognizer.numberOfTouchesRequired = 1
-        addGestureRecognizer(doubleTapRecognizer)
+        label.addGestureRecognizer(doubleTapRecognizer)
     }
 
     @objc private func didDoubleTap(_ sender: UITapGestureRecognizer) {
-        doubleClick.next(true)
+        guard let index = sender.view?.tag else { return }
+        doubleClick.next(index)
     }
 
     override init(frame: CGRect) {

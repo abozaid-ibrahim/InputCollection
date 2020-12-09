@@ -62,6 +62,22 @@ final class CollectionMeasures {
         forcedCollapseRows[row(for: indexPath)] = !expand
     }
 
+    func squeezeColumn(of index: Int, squeeze: Bool) {
+        if squeeze {
+            let diff = columnWidths[index] - Measures.defaultColumnWidth
+            columnWidths[index] = Measures.defaultColumnWidth
+            let expandedIndex = index < Measures.columnsCount - 1 ? index + 1 : index - 1
+            columnWidths[expandedIndex] = columnWidths[expandedIndex] + diff
+
+        } else {
+            for i in 0 ..< columnWidths.count {
+                columnWidths[i] = Measures.defaultColumnWidth
+            }
+            let allItemsWidth = CGFloat(Measures.columnsCount - 1) * Measures.defaultColumnWidth
+            columnWidths[index] = screenWidth - allItemsWidth
+        }
+    }
+
     func allowedWidth(for column: Int) -> CGFloat {
         let cellsMinimuim = columnMinimuimWidth.reduce(0, +) - columnMinimuimWidth[column]
         return screenWidth - cellsMinimuim

@@ -23,8 +23,9 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
         cell.set(text: items[indexPath.row],
                  onDoubleTap: { [weak self] in
                      guard let self = self else { return }
-                     self.heightEditor.setRowExpanded(for: indexPath, expand: true)
-                     self.reloadRow(row: indexPath.row)
+                    self.heightEditor.squeezeColumn(of: indexPath.row, squeeze: false)
+                    self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
+                     self.collectionView.reloadData()
                  },
                  onPinch: { [weak self] recognizer in
                      guard let self = self else { return }
@@ -32,8 +33,8 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
                      case .began, .changed:
                          self.animator.animate(cell: cell, at: indexPath, with: recognizer.scale)
                      case .ended:
-                        self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
-                        self.collectionView.reloadData()//reloadRow(row: indexPath.row)
+                         self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
+                         self.collectionView.reloadData() // reloadRow(row: indexPath.row)
                      default:
                          print("")
                      }
@@ -53,7 +54,7 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
 
 extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.heightEditor.cellSize(for:indexPath)
+        return heightEditor.cellSize(for: indexPath)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
