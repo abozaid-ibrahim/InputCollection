@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension CollectionController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension InputCollectionController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -19,11 +19,24 @@ extension CollectionController: UICollectionViewDataSource, UICollectionViewDele
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EditableCollectionCell.reuseIdentifier, for: indexPath) as! EditableCollectionCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InputCollectionCell.reuseIdentifier, for: indexPath) as! InputCollectionCell
         cell.set(text: items[indexPath.row],
-                 onDoubleTap: {
-                     HeightEditor.shared.setRowExpanded(for: indexPath, expand: true)
+                 onDoubleTap: { [weak self] in
+                     guard let self = self else { return }
+                     self.heightEditor.setRowExpanded(for: indexPath, expand: true)
                      self.reloadRow(row: indexPath.row)
+                 },
+                 onPinch: { [weak self] recognizer in
+                     guard let self = self else { return }
+                     switch recognizer.state {
+                     case .began, .changed:
+                         self.animator.animate(cell: cell, at: indexPath, with: recognizer.scale)
+                     case .ended:
+                         self.reloadRow(row: indexPath.row)
+                     default:
+                         print("")
+                     }
+                     print("Order>>3 ")
                  })
 
         cell.textView.tag = indexPath.row
@@ -33,14 +46,14 @@ extension CollectionController: UICollectionViewDataSource, UICollectionViewDele
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard indexPath.row == currentEditingIndex,
-              let cell = cell as? EditableCollectionCell else { return }
+              let cell = cell as? InputCollectionCell else { return }
         cell.textView.becomeFirstResponder()
     }
 }
 
-extension CollectionController: UICollectionViewDelegateFlowLayout {
+extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: collectionView.bounds.width / 3, height: HeightEditor.shared.height(for: indexPath))
+        return .init(width: heightEditor.columnWidth(for: indexPath) - 1, height: heightEditor.height(for: indexPath))
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

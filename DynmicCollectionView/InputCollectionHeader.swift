@@ -1,5 +1,5 @@
 //
-//  CollectionHeader.swift
+//  InputCollectionHeader.swift
 //  DynmicCollectionView
 //
 //  Created by abuzeid on 04.12.20.
@@ -9,8 +9,8 @@
 import Foundation
 import SwiftUI
 import UIKit
-final class CollectionHeader: UIView {
-    static let identifier = "CollectionHeader"
+final class InputCollectionHeader: UIView {
+    static let identifier = "InputCollectionHeader"
     let doubleClick: Observable<Bool> = .init(false)
     var items: [String] = []
     lazy var contentContainer: UIStackView = {
@@ -80,7 +80,7 @@ final class CollectionHeader: UIView {
 struct Test_Preview: PreviewProvider {
     static var previews: some View {
         return Group {
-            UIKitViewPreview(view: CollectionHeader(with: ["Helo", "ADS", "asf"]))
+            UIKitViewPreview(view: InputCollectionHeader(with: ["Helo", "ADS", "asf"]))
         }
     }
 }

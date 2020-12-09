@@ -18,7 +18,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             // setup done in scene delegate
         } else {
-            window?.rootViewController = CollectionController()
+            window?.rootViewController = UINavigationController(rootViewController: InputCollectionController())
             window?.makeKeyAndVisible()
         }
         return true

@@ -1,5 +1,5 @@
 //
-//  CollectionController.swift
+//  InputCollectionController.swift
 //  DynmicCollectionView
 //
 //  Created by abuzeid on 04.12.20.
@@ -9,10 +9,11 @@
 import SwiftUI
 import UIKit
 
-final class CollectionController: UIViewController {
+final class InputCollectionController: UIViewController {
     var items: [String] = ["a", "b", "c"]
     var currentEditingIndex = -1
-
+    private(set) lazy var heightEditor = CollectionMeasures(screenWidth: self.collectionView.bounds.width)
+    private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView, measures: heightEditor)
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -22,13 +23,14 @@ final class CollectionController: UIViewController {
         return collection
     }()
 
-    lazy var headerView: CollectionHeader = {
-        let view = CollectionHeader(with: ["Name", "Title", "Description"])
+    lazy var headerView: InputCollectionHeader = {
+        let view = InputCollectionHeader(with: ["Name", "Title", "Description"])
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        view.doubleClick.subscribe {
+        view.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        view.doubleClick.subscribe { [weak self] in
+            guard let self = self else { return }
             if $0 {
-                HeightEditor.shared.expandAllCells(false)
+                self.heightEditor.expandAllCells(false)
                 self.collectionView.reloadData()
             }
         }
@@ -57,43 +59,53 @@ final class CollectionController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareCollection()
+        title = "Sap Collection"
+        navigationItem.rightBarButtonItem = .init(title: "Add",
+                                                  style: .plain,
+                                                  target: self,
+                                                  action: #selector(addRow(_:)))
+    }
+
+    @objc private func addRow(_ sender: Any) {
+        view.endEditing(true)
+        items.append(contentsOf: ["", "", ""])
+        heightEditor.insertRow()
+        collectionView.reloadData()
     }
 
     private func prepareCollection() {
         view.addSubview(contentContainer)
         contentContainer.setConstrainsEqualToSafeArea()
-        collectionView.register(EditableCollectionCell.self,
-                                forCellWithReuseIdentifier: EditableCollectionCell.reuseIdentifier)
+        collectionView.register(InputCollectionCell.self,
+                                forCellWithReuseIdentifier: InputCollectionCell.reuseIdentifier)
         collectionView.backgroundColor = .brown
         collectionView.reloadData()
     }
 }
 
-extension CollectionController: UITextViewDelegate {
+extension InputCollectionController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         let newSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width,
                                                    height: CGFloat.greatestFiniteMagnitude))
         let index = textView.tag
         currentEditingIndex = index
         items[index] = textView.text
-        HeightEditor.shared.set(height: newSize.height,
-                                for: IndexPath(row: index, section: 0))
+        guard heightEditor.set(height: newSize.height, for: index) else { return }
         reloadRow(row: index)
     }
 
     func reloadRow(row: Int) {
         UIView.performWithoutAnimation {
-            let row = row / 3
-            collectionView.reloadItems(at: [row, row + 1, row + 2].asIndexPaths)
+            collectionView.reloadItems(at: heightEditor.indexPathsInTheSameRow(for: row))
         }
     }
 }
 
 @available(iOS 13.0.0, *)
-struct CollectionControllerPreview: PreviewProvider {
+struct InputCollectionControllerPreview: PreviewProvider {
     static var previews: some View {
         return Group {
-            UIKitViewPreview(view: CollectionController().contentContainer)
+            UIKitViewPreview(view: InputCollectionController().contentContainer)
         }
     }
 }

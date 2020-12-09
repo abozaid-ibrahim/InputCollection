@@ -1,5 +1,5 @@
 //
-//  EditableCollectionCell.swift
+//  InputCollectionCell.swift
 //  DynmicCollectionView
 //
 //  Created by abuzeid on 04.12.20.
@@ -8,10 +8,15 @@
 
 import SwiftUI
 import UIKit
+
 typealias DoubleTapEvent = () -> Void
-final class EditableCollectionCell: UICollectionViewCell {
-    static let reuseIdentifier = "EditableCollectionCellID"
+typealias PinchEvent = (UIPinchGestureRecognizer) -> Void
+final class InputCollectionCell: UICollectionViewCell {
+    static let reuseIdentifier = "InputCollectionCellID"
+    private var pinchExpandUpdater: PinchEvent?
     private var doubleTapEvent: DoubleTapEvent?
+    let reloadCell: Observable<Bool> = .init(false)
+
     lazy var textView: UITextView = {
         buildTextView()
     }()
@@ -22,7 +27,6 @@ final class EditableCollectionCell: UICollectionViewCell {
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 1
-
         return stack
     }()
 
@@ -43,8 +47,11 @@ final class EditableCollectionCell: UICollectionViewCell {
         return view
     }
 
-    func set(text: String, onDoubleTap: @escaping DoubleTapEvent) {
+    func set(text: String,
+             onDoubleTap: @escaping DoubleTapEvent,
+             onPinch: @escaping PinchEvent) {
         doubleTapEvent = onDoubleTap
+        pinchExpandUpdater = onPinch
         textView.text = text
     }
 
@@ -53,6 +60,18 @@ final class EditableCollectionCell: UICollectionViewCell {
         setup()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        doubleTapEvent = nil
+        pinchExpandUpdater = nil
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension InputCollectionCell {
     func setup() {
         if #available(iOS 13.0, *) {
             contentView.backgroundColor = .systemGray4
@@ -63,18 +82,6 @@ final class EditableCollectionCell: UICollectionViewCell {
         textView.setConstrainsEqualToParentEdges(top: 2, bottom: 2, leading: 2, trailing: 2)
 //        contentContainer.addArrangedSubview(textView1)
         addDoubleTap()
-    }
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
     }
 
     func addDoubleTap() {
@@ -94,55 +101,36 @@ final class EditableCollectionCell: UICollectionViewCell {
 
         let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         textView.addGestureRecognizer(pinchRecognizer)
+        singleTapRecognizer.require(toFail: pinchRecognizer)
     }
 
-    private var lastScale: CGFloat = 1
-    @objc func handlePinch(_ sender: UIPinchGestureRecognizer) {
-        if sender.state == .began {
-            lastScale = 1.0
-        }
-        switch sender.state {
-        case .began:
-            lastScale = 1
+    @objc func handlePinch(_ recognizer: UIPinchGestureRecognizer) {
+        print("Order>>1 ")
+        pinchExpandUpdater?(recognizer)
+        switch recognizer.state {
         case .ended:
-            let scale = 1.0 - (lastScale - sender.scale)
-            layer.setAffineTransform(CGAffineTransform(scaleX: self.lastScale, y: scale))
-        case .possible:
-            print("changed")
-        case .changed:
-            print("changed")
-        case .cancelled:
-            print("changed")
-        case .failed:
-            print("changed")
-        @unknown default:
-            print("changed")
+            reloadCell.next(true)
+        default:
+            print("")
         }
+        recognizer.scale = 1.0
+        print("Order>>4 ")
     }
 
     @objc func didDoubleTap(_ sender: UITapGestureRecognizer) {
-        print(">>> \(#function)")
         doubleTapEvent?()
     }
 
     @objc func didTap(_ sender: UITapGestureRecognizer) {
-        print(">>> \(#function)")
         textView.becomeFirstResponder()
     }
 }
 
-// extension EditableCollectionCell: UIGestureRecognizerDelegate {
-//    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        print(">> \(gestureRecognizer) \n== \(otherGestureRecognizer)")
-//        return true
-//    }
-// }
-
 @available(iOS 13.0.0, *)
-struct Cell_Preview: PreviewProvider {
+struct InputCollectionCellPreview: PreviewProvider {
     static var previews: some View {
         return Group {
-            UIKitViewPreview(view: EditableCollectionCell(frame: UIScreen.main.bounds))
+            UIKitViewPreview(view: InputCollectionCell(frame: UIScreen.main.bounds))
         }
     }
 }

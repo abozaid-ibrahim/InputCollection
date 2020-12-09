@@ -7,8 +7,9 @@
 //
 
 import Foundation
-extension Array where Element == Int {
-    var asIndexPaths: [IndexPath] {
-        return map { IndexPath(row: $0, section: 0) }
+
+extension IndexPath {
+    init(position: Int) {
+        self.init(row: position, section: 0)
     }
 }
