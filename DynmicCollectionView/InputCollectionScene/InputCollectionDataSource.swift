@@ -26,15 +26,16 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
                      onDoubleTap: { [weak self] in self?.squeese(row: indexPath.row) },
                      onPinch: { [weak self] recognizer in self?.scale(cell: cell, at: indexPath, with: recognizer) })
             cell.textView.tag = indexPath.row
-//            cell.textView.delegate = self
+            cell.textView.delegate = self
             return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//        guard indexPath.row == viewModel.currentEditingIndex,
-//              let cell = cell as? InputCollectionCell else { return }
-//        cell.textView.becomeFirstResponder()
+        guard indexPath.row == viewModel.currentEditingIndex,
+              let cell = cell as? InputCollectionCell,
+              cell.textView.canBecomeFirstResponder else { return }
+        cell.textView.becomeFirstResponder()
     }
 }
 

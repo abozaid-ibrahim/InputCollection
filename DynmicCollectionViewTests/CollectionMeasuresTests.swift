@@ -14,6 +14,7 @@ final class CollectionMeasuresTests: XCTestCase {
     private var measures: CollectionMeasures!
     override func setUpWithError() throws {
         measures = CollectionMeasures(screenWidth: 400)
+        measures.insertRow()
     }
 
     func testCellSizeWhenAddRemoveCell() throws {

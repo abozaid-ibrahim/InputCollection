@@ -20,7 +20,7 @@ final class InputCollectionController: UIViewController {
         layout.minimumInteritemSpacing = 0
         layout.sectionInset = .zero
         layout.scrollDirection = .vertical
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collection = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
         collection.delegate = self
         collection.dataSource = self
         return collection
@@ -28,8 +28,6 @@ final class InputCollectionController: UIViewController {
 
     private(set) lazy var headerView: InputCollectionHeader = {
         let view = InputCollectionHeader(with: ["Name", "Title", "Notes"])
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 60).isActive = true
         view.doubleClick.subscribe { [weak self] in
             guard let self = self,
                   $0 >= 0 else { return }
@@ -69,11 +67,20 @@ final class InputCollectionController: UIViewController {
                                                   style: .plain,
                                                   target: self,
                                                   action: #selector(addRow(_:)))
-        viewModel.appendNewRow()
+        addNewRow()
     }
 
     @objc private func addRow(_ sender: Any) {
         view.endEditing(true)
+        addNewRow()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        headerView.updateLabelsWidth(with: measures.columnWidths)
+    }
+
+    private func addNewRow() {
         viewModel.appendNewRow()
         measures.insertRow()
         collectionView.reloadData()
@@ -86,8 +93,8 @@ final class InputCollectionController: UIViewController {
                                 forCellWithReuseIdentifier: InputCollectionCell.reuseIdentifier)
         collectionView.register(DeleteCell.self,
                                 forCellWithReuseIdentifier: DeleteCell.identifier)
-        collectionView.backgroundColor = .brown
-        collectionView.reloadData()
+        collectionView.backgroundColor = .clear
+        view.backgroundColor = .brown
     }
 }
 

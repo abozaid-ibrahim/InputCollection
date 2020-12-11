@@ -11,6 +11,8 @@ import UIKit
 
 typealias DoubleTapEvent = () -> Void
 typealias PinchEvent = (UIPinchGestureRecognizer) -> Void
+typealias TextChanged = (UIPinchGestureRecognizer) -> Void
+
 final class InputCollectionCell: UICollectionViewCell {
     static let reuseIdentifier = "InputCollectionCellID"
     private var pinchExpandUpdater: PinchEvent?

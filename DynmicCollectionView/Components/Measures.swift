@@ -11,7 +11,7 @@ import UIKit
 
 struct Measures {
     static let columnsCount = 3
-    static let defaultRowHeight: CGFloat = 100
+    static let defaultRowHeight: CGFloat = 50
     static let defaultColumnWidth: CGFloat = 80
     static let deleteButtonWidth: CGFloat = 50
 }
@@ -25,7 +25,7 @@ final class CollectionMeasures {
     }
 
     private(set) lazy var columnWidths: [CGFloat] = .init(repeating: self.screenWidth / CGFloat(Measures.columnsCount), count: Measures.columnsCount)
-    private(set) lazy var heightMatrix: [[CGFloat]] = [rowDefaultHeight]
+    private(set) lazy var heightMatrix: [[CGFloat]] = []
     private lazy var rowDefaultHeight: [CGFloat] = .init(repeating: Measures.defaultRowHeight, count: Measures.columnsCount)
     private lazy var columnMinimuimWidth: [CGFloat] = .init(repeating: Measures.defaultColumnWidth, count: Measures.columnsCount)
 

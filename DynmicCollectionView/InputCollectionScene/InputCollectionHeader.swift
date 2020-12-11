@@ -30,6 +30,8 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     private lazy var emptyHeaderView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.widthAnchor.constraint(equalToConstant: Measures.deleteButtonWidth).isActive = true
         return view
     }()
 
@@ -39,23 +41,18 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         label.isUserInteractionEnabled = true
         label.text = title
         label.translatesAutoresizingMaskIntoConstraints = false
-        let const = label.widthAnchor.constraint(equalToConstant: bounds.width / 3)
+        let const = label.widthAnchor.constraint(equalToConstant: bounds.width / CGFloat(Measures.columnsCount))
         const.identifier = widthConstrainID
         const.isActive = true
         if #available(iOS 13.0, *) {
-            label.textColor = .label
+            label.backgroundColor = .systemGray6
         } else {
-            label.textColor = .black
+            label.backgroundColor = .gray
         }
         return label
     }
 
     private func setup() {
-        if #available(iOS 13.0, *) {
-            backgroundColor = .systemGray6
-        } else {
-            backgroundColor = .gray
-        }
         addSubview(contentContainer)
         contentContainer.setConstrainsEqualToParentEdges()
         for index in 0 ..< items.count {
@@ -65,6 +62,9 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
             contentContainer.addArrangedSubview(label)
         }
         contentContainer.addArrangedSubview(emptyHeaderView)
+        translatesAutoresizingMaskIntoConstraints = false
+        heightAnchor.constraint(equalToConstant: 40).isActive = true
+
     }
 
     func updateLabelsWidth(with widths: [CGFloat]) {
@@ -76,7 +76,6 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
             widthConstrain.constant = widths[index]
             index += 1
         }
-//        layoutIfNeeded()
     }
 
     private func enableDoubleTap(for label: UILabel) {
