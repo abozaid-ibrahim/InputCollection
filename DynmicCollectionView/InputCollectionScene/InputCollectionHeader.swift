@@ -15,6 +15,7 @@ protocol InputCollectionHeaderType {
 
 final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     static let identifier = "InputCollectionHeader"
+    private let widthConstrainID = "width"
     let doubleClick: Observable<Int> = .init(-1)
     var items: [String] = []
 
@@ -26,7 +27,12 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         return stack
     }()
 
-    private let widthConstrainID = "width"
+    private lazy var emptyHeaderView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+
     private func newTitleLabel(with title: String) -> UILabel {
         let label = UILabel()
         label.textAlignment = .center
@@ -58,6 +64,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
             enableDoubleTap(for: label)
             contentContainer.addArrangedSubview(label)
         }
+        contentContainer.addArrangedSubview(emptyHeaderView)
     }
 
     func updateLabelsWidth(with widths: [CGFloat]) {
@@ -69,7 +76,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
             widthConstrain.constant = widths[index]
             index += 1
         }
-        layoutIfNeeded()
+//        layoutIfNeeded()
     }
 
     private func enableDoubleTap(for label: UILabel) {

@@ -10,62 +10,64 @@ import Foundation
 import UIKit
 
 extension InputCollectionController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return viewModel.items.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InputCollectionCell.reuseIdentifier, for: indexPath) as! InputCollectionCell
-        cell.set(text: items[indexPath.row],
-                 onDoubleTap: { [weak self] in
-                     guard let self = self else { return }
-                    self.heightEditor.squeezeColumn(of: indexPath.row, squeeze: false)
-                    self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
-                     self.collectionView.reloadData()
-                 },
-                 onPinch: { [weak self] recognizer in
-                     guard let self = self else { return }
-                     switch recognizer.state {
-                     case .began, .changed:
-                         self.animator.animate(cell: cell, at: indexPath, with: recognizer.scale)
-                     case .ended:
-                         self.headerView.updateLabelsWidth(with: self.heightEditor.columnWidths)
-                         self.collectionView.reloadData() // reloadRow(row: indexPath.row)
-                     default:
-                         print("")
-                     }
-                 })
-
-        cell.textView.tag = indexPath.row
-        cell.textView.delegate = self
-        return cell
+        switch viewModel.items[indexPath.row] {
+        case .delete:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DeleteCell.identifier, for: indexPath) as! DeleteCell
+            cell.set(onTap: { [weak self] in self?.delete(row: indexPath.row) })
+            return cell
+        case let .input(text):
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InputCollectionCell.reuseIdentifier, for: indexPath) as! InputCollectionCell
+            cell.set(text: text,
+                     onDoubleTap: { [weak self] in self?.squeese(row: indexPath.row) },
+                     onPinch: { [weak self] recognizer in self?.scale(cell: cell, at: indexPath, with: recognizer) })
+            cell.textView.tag = indexPath.row
+//            cell.textView.delegate = self
+            return cell
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.row == currentEditingIndex,
-              let cell = cell as? InputCollectionCell else { return }
-        cell.textView.becomeFirstResponder()
+//        guard indexPath.row == viewModel.currentEditingIndex,
+//              let cell = cell as? InputCollectionCell else { return }
+//        cell.textView.becomeFirstResponder()
+    }
+}
+
+private extension InputCollectionController {
+    func delete(row: Int) {
+        let indexes = measures.indexesOfDelete(for: row)
+        measures.deleteRow(with: row)
+        viewModel.delete(at: indexes.map { $0.row })
+        collectionView.deleteItems(at: indexes)
+        collectionView.reloadData()
+    }
+
+    func squeese(row: Int) {
+        measures.squeezeColumn(of: row, squeeze: false)
+        headerView.updateLabelsWidth(with: measures.columnWidths)
+        collectionView.reloadData()
+    }
+
+    func scale(cell: UICollectionViewCell, at indexPath: IndexPath, with recognizer: UIPinchGestureRecognizer) {
+        switch recognizer.state {
+        case .began, .changed:
+            animator.animate(cell: cell, at: indexPath, with: recognizer.scale)
+        case .ended:
+            headerView.updateLabelsWidth(with: measures.columnWidths)
+            collectionView.reloadData()
+        default:
+            print(">> \(recognizer)")
+        }
     }
 }
 
 extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return heightEditor.cellSize(for: indexPath)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .zero
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return measures.cellSize(for: indexPath, isDeleteCell: viewModel.items[indexPath.row] == .delete)
     }
 }

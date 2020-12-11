@@ -15,9 +15,8 @@ final class InputCollectionCell: UICollectionViewCell {
     static let reuseIdentifier = "InputCollectionCellID"
     private var pinchExpandUpdater: PinchEvent?
     private var doubleTapEvent: DoubleTapEvent?
-    let reloadCell: Observable<Bool> = .init(false)
 
-    private(set) lazy var textView: UITextView = {
+    lazy var textView: UITextView = {
         let view = UITextView()
         view.showsVerticalScrollIndicator = false
         view.showsHorizontalScrollIndicator = false
@@ -28,8 +27,7 @@ final class InputCollectionCell: UICollectionViewCell {
         view.addDoneButtonToKeypad()
         view.alwaysBounceVertical = false
         view.alwaysBounceHorizontal = false
-        view.gestureRecognizers = nil
-        view.isUserInteractionEnabled = true
+
         return view
     }()
 
@@ -52,49 +50,48 @@ final class InputCollectionCell: UICollectionViewCell {
         pinchExpandUpdater = nil
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("no implemented")
     }
 }
 
 private extension InputCollectionCell {
     func setup() {
         if #available(iOS 13.0, *) {
-            contentView.backgroundColor = .systemGray4
+            contentView.backgroundColor = .systemGray
         } else {
-            contentView.backgroundColor = .gray
+            contentView.backgroundColor = .darkGray
         }
         contentView.addSubview(textView)
-        textView.setConstrainsEqualToParentEdges(top: 2, bottom: 2, leading: 2, trailing: 2)
-        addDoubleTap()
+        textView.setConstrainsEqualToParentEdges(top: 1, bottom: 1, leading: 1, trailing: 1)
+        addGestureRecognizers()
     }
 
-    func addDoubleTap() {
-        let singleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
-        singleTapRecognizer.numberOfTapsRequired = 1
-        singleTapRecognizer.numberOfTouchesRequired = 1
-        textView.addGestureRecognizer(singleTapRecognizer)
+    func addGestureRecognizers() {
+        textView.gestureRecognizers = nil
+        textView.isUserInteractionEnabled = true
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        tapRecognizer.numberOfTapsRequired = 1
+        tapRecognizer.numberOfTouchesRequired = 1
+        textView.addGestureRecognizer(tapRecognizer)
 
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(didDoubleTap(_:)))
         doubleTapRecognizer.numberOfTapsRequired = 2
         doubleTapRecognizer.numberOfTouchesRequired = 1
-//        doubleTapRecognizer.cancelsTouchesInView = true
-//        doubleTapRecognizer.delegate = self
+        doubleTapRecognizer.cancelsTouchesInView = true
         textView.addGestureRecognizer(doubleTapRecognizer)
-
-        singleTapRecognizer.require(toFail: doubleTapRecognizer)
 
         let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         textView.addGestureRecognizer(pinchRecognizer)
-        singleTapRecognizer.require(toFail: pinchRecognizer)
+
+        tapRecognizer.require(toFail: doubleTapRecognizer)
+        tapRecognizer.require(toFail: pinchRecognizer)
     }
 
     @objc func handlePinch(_ recognizer: UIPinchGestureRecognizer) {
         pinchExpandUpdater?(recognizer)
         recognizer.scale = 1.0
-        if recognizer.state == .ended {
-            reloadCell.next(true)
-        }
     }
 
     @objc func didDoubleTap(_ sender: UITapGestureRecognizer) {
@@ -102,6 +99,9 @@ private extension InputCollectionCell {
     }
 
     @objc func didTap(_ sender: UITapGestureRecognizer) {
+        guard textView.canBecomeFirstResponder, !textView.isFirstResponder else {
+            return
+        }
         textView.becomeFirstResponder()
     }
 }

@@ -10,10 +10,10 @@
 import XCTest
 
 final class CollectionMeasuresTests: XCTestCase {
-    private let accuracy: CGFloat = 0.001
+    private let accuracy: CGFloat = 0.0000001
     private var measures: CollectionMeasures!
     override func setUpWithError() throws {
-        measures = CollectionMeasures(screenWidth: 300)
+        measures = CollectionMeasures(screenWidth: 400)
     }
 
     func testCellSizeWhenAddRemoveCell() throws {
@@ -23,7 +23,7 @@ final class CollectionMeasuresTests: XCTestCase {
         XCTAssertEqual(measures.height(for: .init(position: 0)), Measures.defaultRowHeight)
     }
 
-    func testScaleCellToMaxWidth() throws {
+    func testScaleCellWidthByPinch() throws {
         measures.updateCellSizeScale(for: .init(position: 1), scale: 1.1)
         XCTAssertEqual(measures.columnWidths[1], 110,
                        accuracy: accuracy)
@@ -31,30 +31,34 @@ final class CollectionMeasuresTests: XCTestCase {
                        accuracy: accuracy)
         XCTAssertEqual(measures.columnWidths[2], 190 / 2,
                        accuracy: accuracy)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), 33,
-                       accuracy: accuracy)
 
         measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
         XCTAssertEqual(measures.columnWidths[1], 132,
                        accuracy: accuracy)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), 33 * 1.2,
-                       accuracy: accuracy)
 
         measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
         XCTAssertEqual(measures.columnWidths[1], 140,
                        accuracy: accuracy)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), 47.52,
+        XCTAssertEqual(measures.columnWidths[0], Measures.defaultColumnWidth,
+                       accuracy: accuracy)
+    }
+
+    func testScaleCellToMaxHeight() throws {
+        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.1)
+        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1,
+                       accuracy: accuracy)
+
+        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
+        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1 * 1.2,
+                       accuracy: accuracy)
+
+        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
+        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1 * 1.2 * 1.2,
                        accuracy: accuracy)
     }
 
     func testScaleCellWidthCantExceedMinimuimWidthToOtherColumns() throws {
-        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.4)
-        XCTAssertEqual(measures.columnWidths[1], 140,
-                       accuracy: accuracy)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), 30 * 1.4,
-                       accuracy: accuracy)
-
-        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.1)
+        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.5)
         XCTAssertEqual(measures.columnWidth(for: .init(position: 1)), 140,
                        accuracy: accuracy)
         XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), 80,
@@ -63,17 +67,62 @@ final class CollectionMeasuresTests: XCTestCase {
         XCTAssertEqual(measures.columnWidth(for: .init(position: 2)), 80,
                        accuracy: accuracy)
 
-        XCTAssertEqual(measures.height(for: .init(position: 1)), 30 * 1.4 * 1.1,
-                       accuracy: accuracy)
         XCTAssertEqual(measures.columnWidths.reduce(0, +), 300,
                        accuracy: accuracy)
     }
 
+    func testReversedScaleFactorForOtherCells() {
+        XCTAssertEqual(measures.unScaleValue(scale: 1.1), 0.95, accuracy: accuracy)
+        XCTAssertEqual(measures.unScaleValue(scale: 0.9), 1.05)
+        XCTAssertEqual(measures.unScaleValue(scale: 0.9590133436675166), 1.02049332817, accuracy: accuracy)
+    }
+
+    func testTranslateSpaceFactorForOtherCells() {
+        // Increase size
+        XCTAssertEqual(measures.translate(scale: 1.05, for: .init(position: 0), source: .init(position: 1)), 2.5, accuracy: accuracy)
+
+        XCTAssertEqual(measures.translate(scale: 1.05, for: .init(position: 2), source: .init(position: 1)), -2.5, accuracy: accuracy)
+        // Decrease size
+
+        XCTAssertEqual(measures.translate(scale: 0.9, for: .init(position: 0), source: .init(position: 1)), -5, accuracy: accuracy)
+
+        XCTAssertEqual(measures.translate(scale: 0.9, for: .init(position: 2), source: .init(position: 1)), 5, accuracy: accuracy)
+    }
+
+    func testSqueezeColumn() {
+        measures.squeezeColumn(of: 0, squeeze: true)
+        XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), Measures.defaultColumnWidth)
+
+        measures.squeezeColumn(of: 0, squeeze: false)
+        XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), 140)
+    }
+
+    func testSetCellWidthByScaling() {
+        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.1)
+        XCTAssertEqual(measures.columnWidths[0], 95)
+        XCTAssertEqual(measures.columnWidths[1], 110, accuracy: accuracy)
+        XCTAssertEqual(measures.columnWidths[2], 95)
+    }
+
+    func testReturnDeleteButtonIndexes() {
+        XCTAssertEqual(measures.indexesOfDelete(for: 7), [.init(position: 4), .init(position: 5), .init(position: 6), .init(position: 7)])
+    }
+
+    func testCanScaleWidth() {
+        XCTAssertEqual(measures.canScaleWidth(for: .init(position: 1), scale: 1.4), true)
+        XCTAssertEqual(measures.canScaleWidth(for: .init(position: 1), scale: 1.41), false)
+    }
+
+    func testDeleteRow() {
+        measures.deleteRow(with: 3)
+        XCTAssertEqual(measures.heightMatrix.count, 0)
+    }
+
     func testGetIndexPathsInTheSameRow() {
         let indexes: [IndexPath] = (0 ... 20).map { IndexPath(row: $0, section: 0) }
-        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 1),  Array(indexes[0...2]))
-        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 3),  Array(indexes[3...5]))
-        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 19),  Array(indexes[18...20]))
-        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 20),  Array(indexes[18...20]))
+        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 1), Array(indexes[0 ... 2]))
+        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 4), Array(indexes[4 ... 6]))
+        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 10), Array(indexes[8 ... 10]))
+        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 12), Array(indexes[12 ... 14]))
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6CA3D50825838AB90039741E /* InputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA3D50725838AB90039741E /* InputItem.swift */; };
+		6CA3D510258391EA0039741E /* InputCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */; };
 		6CBAF991257C5F2600C2AE98 /* KeypadToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */; };
 		6CBAF996257C644800C2AE98 /* Measures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBAF995257C644800C2AE98 /* Measures.swift */; };
 		6CBAF99B257C6CE100C2AE98 /* IndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBAF99A257C6CE100C2AE98 /* IndexPath.swift */; };
@@ -22,6 +24,7 @@
 		6CC24F88257AC8720004446C /* InputCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F87257AC8720004446C /* InputCollectionHeader.swift */; };
 		6CC24F8A257AC8A20004446C /* InputCollectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F89257AC8A20004446C /* InputCollectionDataSource.swift */; };
 		6CC24F8D257AEBD60004446C /* UIKitViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */; };
+		6CCD76B22581AE9000EAB9F3 /* DeleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */; };
 		6CF9CCF72580FF4A004621FB /* ResizeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */; };
 		6CF9CD0B25810A74004621FB /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9CD0A25810A74004621FB /* Observable.swift */; };
 /* End PBXBuildFile section */
@@ -44,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6CA3D50725838AB90039741E /* InputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputItem.swift; sourceTree = "<group>"; };
+		6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionViewModel.swift; sourceTree = "<group>"; };
 		6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadToolbar.swift; sourceTree = "<group>"; };
 		6CBAF995257C644800C2AE98 /* Measures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Measures.swift; sourceTree = "<group>"; };
 		6CBAF99A257C6CE100C2AE98 /* IndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPath.swift; sourceTree = "<group>"; };
@@ -65,6 +70,7 @@
 		6CC24F87257AC8720004446C /* InputCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionHeader.swift; sourceTree = "<group>"; };
 		6CC24F89257AC8A20004446C /* InputCollectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionDataSource.swift; sourceTree = "<group>"; };
 		6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitViewPreview.swift; sourceTree = "<group>"; };
+		6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCell.swift; sourceTree = "<group>"; };
 		6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeAnimator.swift; sourceTree = "<group>"; };
 		6CF9CD0A25810A74004621FB /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -170,10 +176,13 @@
 		6CF9CD0F25811E8F004621FB /* InputCollectionScene */ = {
 			isa = PBXGroup;
 			children = (
+				6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */,
 				6CC24F80257A7AFE0004446C /* InputCollectionController.swift */,
-				6CC24F83257A7CC80004446C /* InputCollectionCell.swift */,
 				6CC24F89257AC8A20004446C /* InputCollectionDataSource.swift */,
+				6CC24F83257A7CC80004446C /* InputCollectionCell.swift */,
 				6CC24F87257AC8720004446C /* InputCollectionHeader.swift */,
+				6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */,
+				6CA3D50725838AB90039741E /* InputItem.swift */,
 			);
 			path = InputCollectionScene;
 			sourceTree = "<group>";
@@ -318,9 +327,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6CF9CD0B25810A74004621FB /* Observable.swift in Sources */,
+				6CA3D510258391EA0039741E /* InputCollectionViewModel.swift in Sources */,
 				6CC24F88257AC8720004446C /* InputCollectionHeader.swift in Sources */,
+				6CCD76B22581AE9000EAB9F3 /* DeleteCell.swift in Sources */,
 				6CC24F81257A7AFE0004446C /* InputCollectionController.swift in Sources */,
 				6CC24F84257A7CC80004446C /* InputCollectionCell.swift in Sources */,
+				6CA3D50825838AB90039741E /* InputItem.swift in Sources */,
 				6CBAF99B257C6CE100C2AE98 /* IndexPath.swift in Sources */,
 				6CC24F86257AB12C0004446C /* UIView+Constrains.swift in Sources */,
 				6CC24F8A257AC8A20004446C /* InputCollectionDataSource.swift in Sources */,
