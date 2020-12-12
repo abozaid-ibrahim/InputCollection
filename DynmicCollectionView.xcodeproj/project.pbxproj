@@ -29,7 +29,6 @@
 		6CC24F8D257AEBD60004446C /* UIKitViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */; };
 		6CCD76B22581AE9000EAB9F3 /* DeleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */; };
 		6CF9CCF72580FF4A004621FB /* ResizeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */; };
-		6CF9CD0B25810A74004621FB /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9CD0A25810A74004621FB /* Observable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +52,7 @@
 		6C8248CF2583CDA400675F2E /* UIColor+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+App.swift"; sourceTree = "<group>"; };
 		6C8248E325841CB000675F2E /* UICollectionView+Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Cell.swift"; sourceTree = "<group>"; };
 		6C8248EB2584D20D00675F2E /* KeyboardAutoHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAutoHandling.swift; sourceTree = "<group>"; };
+		6C8248FA2584EBC100675F2E /* DynmicCollectionView.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = DynmicCollectionView.xctestplan; sourceTree = "<group>"; };
 		6CA3D50725838AB90039741E /* InputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputItem.swift; sourceTree = "<group>"; };
 		6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionViewModel.swift; sourceTree = "<group>"; };
 		6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadToolbar.swift; sourceTree = "<group>"; };
@@ -78,7 +78,6 @@
 		6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitViewPreview.swift; sourceTree = "<group>"; };
 		6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCell.swift; sourceTree = "<group>"; };
 		6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeAnimator.swift; sourceTree = "<group>"; };
-		6CF9CD0A25810A74004621FB /* Observable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +139,7 @@
 		6CC24F66257A7AE50004446C /* DynmicCollectionViewTests */ = {
 			isa = PBXGroup;
 			children = (
+				6C8248FA2584EBC100675F2E /* DynmicCollectionView.xctestplan */,
 				6CC24F67257A7AE50004446C /* CollectionMeasuresTests.swift */,
 				6CC24F69257A7AE50004446C /* Info.plist */,
 			);
@@ -170,7 +170,6 @@
 		6CC24F8B257AEBC20004446C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				6CF9CD0A25810A74004621FB /* Observable.swift */,
 				6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */,
 				6CC24F85257AB12C0004446C /* UIView+Constrains.swift */,
 				6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */,
@@ -335,7 +334,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CF9CD0B25810A74004621FB /* Observable.swift in Sources */,
 				6CA3D510258391EA0039741E /* InputCollectionViewModel.swift in Sources */,
 				6CC24F88257AC8720004446C /* InputCollectionHeader.swift in Sources */,
 				6CCD76B22581AE9000EAB9F3 /* DeleteCell.swift in Sources */,

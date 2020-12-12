@@ -27,14 +27,14 @@ final class InputCollectionController: KeyboardHandlerController {
     }()
 
     private(set) lazy var headerView: InputCollectionHeader = {
-        let view = InputCollectionHeader(with: [.name, .title, .notes])
-        view.doubleClick.subscribe { [weak self] in
-            guard let self = self,
-                  $0 >= 0 else { return }
+        let view = InputCollectionHeader(with: [.name, .title, .notes], onSelected: { [weak self] in
+            guard let self = self else { return }
             self.measures.squeezeColumn(of: $0, squeeze: true)
             self.headerView.updateLabelsWidth(with: self.measures.columnWidths)
             self.collectionView.reloadData()
-        }
+
+        })
+
         return view
     }()
 

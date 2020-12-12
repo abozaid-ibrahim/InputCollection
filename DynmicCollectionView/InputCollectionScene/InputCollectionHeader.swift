@@ -13,10 +13,11 @@ import UIKit
 protocol InputCollectionHeaderType {
 }
 
+typealias ItemSelectedEvent = (Int) -> Void
 final class InputCollectionHeader: UIView, InputCollectionHeaderType {
     private let widthConstrainID = "width"
     private let spacing: CGFloat = 1
-    let doubleClick: Observable<Int> = .init(-1)
+    private var selectedEvent: ItemSelectedEvent?
     private var items: [String] = []
 
     private lazy var contentContainer: UIStackView = {
@@ -83,7 +84,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
 
     @objc private func didDoubleTap(_ sender: UITapGestureRecognizer) {
         guard let index = sender.view?.tag else { return }
-        doubleClick.next(index)
+        selectedEvent?(index)
     }
 
     override init(frame: CGRect) {
@@ -91,8 +92,9 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         setup()
     }
 
-    init(with items: [String]) {
+    init(with items: [String], onSelected: ItemSelectedEvent?) {
         self.items = items
+        selectedEvent = onSelected
         super.init(frame: UIScreen.main.bounds)
         setup()
     }
@@ -101,13 +103,14 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 #if DEBUG
-@available(iOS 13.0.0, *)
-struct Test_Preview: PreviewProvider {
-    static var previews: some View {
-        return Group {
-            UIKitViewPreview(view: InputCollectionHeader(with: ["Helo", "ADS", "asf"]))
+    @available(iOS 13.0.0, *)
+    struct Test_Preview: PreviewProvider {
+        static var previews: some View {
+            return Group {
+                UIKitViewPreview(view: InputCollectionHeader(with: ["Helo", "ADS", "asf"],onSelected: nil))
+            }
         }
     }
-}
 #endif

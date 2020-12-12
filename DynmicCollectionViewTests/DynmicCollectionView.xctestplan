@@ -1,0 +1,36 @@
+{
+  "configurations" : [
+    {
+      "id" : "19EAF97A-6D17-4363-9E24-1ED295E17A3B",
+      "name" : "ThreadConfiguration",
+      "options" : {
+        "threadSanitizerEnabled" : true,
+        "undefinedBehaviorSanitizerEnabled" : true
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:DynmicCollectionView.xcodeproj",
+      "identifier" : "6CC24F4C257A7AE30004446C",
+      "name" : "DynmicCollectionView"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:DynmicCollectionView.xcodeproj",
+        "identifier" : "6CC24F62257A7AE50004446C",
+        "name" : "DynmicCollectionViewTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:DynmicCollectionView.xcodeproj",
+        "identifier" : "6CC24F6D257A7AE50004446C",
+        "name" : "DynmicCollectionViewUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
