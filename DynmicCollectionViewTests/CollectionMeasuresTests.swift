@@ -14,7 +14,7 @@ final class CollectionMeasuresTests: XCTestCase {
     private let constants = MockedMeasures()
     private var measures: CollectionMeasures!
     override func setUpWithError() throws {
-        measures = CollectionMeasures(screenWidth: 400,measures: constants)
+        measures = CollectionMeasures(screenWidth: 400, measures: constants)
         measures.insertRow()
     }
 
@@ -123,9 +123,20 @@ final class CollectionMeasuresTests: XCTestCase {
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 4), Array(indexes[4 ... 6]))
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 10), Array(indexes[8 ... 10]))
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 12), Array(indexes[12 ... 14]))
+        XCTAssertEqual(measures.indexPathsInTheSameRow(for: 1, excludeMe: true),
+                       [IndexPath(position: 0), IndexPath(position: 2)])
+    }
+
+    func testOrientationChange() {
+        XCTAssertEqual(measures.columnWidths[0], 100)
+        measures.update(screenWidth: 700)
+        XCTAssertEqual(measures.columnWidths[0], 200)
+        XCTAssertEqual(measures.columnWidths[1], 200)
+        XCTAssertEqual(measures.columnWidths[2], 200)
     }
 }
-struct MockedMeasures:MeasuresType{
+
+struct MockedMeasures: MeasuresType {
     let columnsCount = 3
     let defaultRowHeight: CGFloat = 80
     let defaultColumnWidth: CGFloat = 80

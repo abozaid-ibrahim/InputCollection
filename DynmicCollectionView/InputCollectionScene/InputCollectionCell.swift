@@ -112,7 +112,7 @@ private extension InputCollectionCell {
         textView.becomeFirstResponder()
     }
 }
-
+#if DEBUG
 @available(iOS 13.0.0, *)
 struct InputCollectionCellPreview: PreviewProvider {
     static var previews: some View {
@@ -121,3 +121,4 @@ struct InputCollectionCellPreview: PreviewProvider {
         }
     }
 }
+#endif

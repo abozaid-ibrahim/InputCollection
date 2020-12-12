@@ -52,7 +52,7 @@ private extension DeleteCell {
         tapEvent?()
     }
 }
-
+#if DEBUG
 @available(iOS 13.0.0, *)
 struct DeleteCellPreview: PreviewProvider {
     static var previews: some View {
@@ -61,3 +61,4 @@ struct DeleteCellPreview: PreviewProvider {
         }
     }
 }
+#endif

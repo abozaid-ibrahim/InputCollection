@@ -19,7 +19,7 @@ protocol MeasuresType {
 
 struct Measures: MeasuresType {
     let columnsCount = 3
-    let defaultRowHeight: CGFloat = 50
+    let defaultRowHeight: CGFloat = 700
     let defaultColumnWidth: CGFloat = 80
     let deleteButtonWidth: CGFloat = 50
     func rowDefaultHeight() -> [CGFloat] {
@@ -58,9 +58,11 @@ final class CollectionMeasures: CollectionMeasuresType {
         let previousWidth = self.screenWidth
         self.screenWidth = screenWidth - measures.deleteButtonWidth
         let ratio = self.screenWidth / previousWidth
+        print(columnWidths)
         for index in 0 ..< columnWidths.count {
             columnWidths[index] = columnWidths[index] * ratio
         }
+        print(columnWidths)
     }
 
     func insertRow() {

@@ -101,7 +101,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
+#if DEBUG
 @available(iOS 13.0.0, *)
 struct Test_Preview: PreviewProvider {
     static var previews: some View {
@@ -110,3 +110,4 @@ struct Test_Preview: PreviewProvider {
         }
     }
 }
+#endif

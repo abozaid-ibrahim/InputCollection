@@ -12,8 +12,10 @@ import UIKit
 extension UITextView {
     func addDoneButtonToKeypad() {
         let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(hideKeypad))
-        let toolbar = UIToolbar(frame: .init(origin: .zero, size: CGSize(width: UIScreen.main.bounds.width, height: 40)))
-        toolbar.items = [doneButton]
+        let toolbar = UIToolbar()
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.items = [flexSpace, flexSpace, doneButton]
+        toolbar.sizeToFit()
         inputAccessoryView = toolbar
     }
 

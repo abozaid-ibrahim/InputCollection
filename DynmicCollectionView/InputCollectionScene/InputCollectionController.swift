@@ -9,7 +9,7 @@
 import SwiftUI
 import UIKit
 
-final class InputCollectionController: UIViewController {
+final class InputCollectionController: KeyboardHandlerController {
     let viewModel: InputViewModelType
     private(set) lazy var measures = CollectionMeasures(screenWidth: self.collectionView.bounds.width)
     private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView, measures: measures)
@@ -108,11 +108,13 @@ extension String {
     static var sapCollection: String { return "Input Collection" }
 }
 
-@available(iOS 13.0.0, *)
-struct InputCollectionControllerPreview: PreviewProvider {
-    static var previews: some View {
-        return Group {
-            UIKitViewPreview(view: InputCollectionController().view)
+#if DEBUG
+    @available(iOS 13.0.0, *)
+    struct InputCollectionControllerPreview: PreviewProvider {
+        static var previews: some View {
+            return Group {
+                UIKitViewPreview(view: InputCollectionController().view)
+            }
         }
     }
-}
+#endif
