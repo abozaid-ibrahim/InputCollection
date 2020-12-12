@@ -19,7 +19,7 @@ protocol MeasuresType {
 
 struct Measures: MeasuresType {
     let columnsCount = 3
-    let defaultRowHeight: CGFloat = 700
+    let defaultRowHeight: CGFloat = 50
     let defaultColumnWidth: CGFloat = 80
     let deleteButtonWidth: CGFloat = 50
     func rowDefaultHeight() -> [CGFloat] {
@@ -78,12 +78,10 @@ final class CollectionMeasures: CollectionMeasuresType {
     }
 
     func set(height: CGFloat, for position: Int, with newLineMargin: CGFloat = 4) -> Bool {
-        let r = row(for: position)
-        let c = column(for: position)
-        guard heightMatrix[r][c] != height + newLineMargin else {
+        guard heightMatrix[row(for: position)][column(for: position)] != height + newLineMargin else {
             return false
         }
-        heightMatrix[r][c] = height + newLineMargin
+        heightMatrix[row(for: position)][column(for: position)] = height + newLineMargin
         return true
     }
 
@@ -118,8 +116,7 @@ final class CollectionMeasures: CollectionMeasuresType {
 
     func unScaleValue(scale: CGFloat) -> CGFloat {
         let one: CGFloat = 1.00
-        let d = scale > one ? scale - one : one - scale
-        let diff = d / neighborsCount
+        let diff = abs(scale - one) / neighborsCount
         let scaleFactorForOtherCells = (scale > one) ? one - diff : one + diff
         return scaleFactorForOtherCells
     }

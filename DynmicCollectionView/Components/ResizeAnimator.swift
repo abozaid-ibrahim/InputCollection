@@ -26,7 +26,7 @@ final class ResizeAnimator: ResizeAnimatorType {
         let indexes = measures.indexPathsInTheSameRow(for: indexPath.row, excludeMe: true)
         let unScale = measures.unScaleValue(scale: scale)
         for index in indexes {
-            let sameRowCell = collectionView.cellForItem(at: index)!
+            guard let sameRowCell = collectionView.cellForItem(at: index) else { continue }
             sameRowCell.transform = sameRowCell.transform
                 .scaledBy(x: unScale, y: 1.0)
                 .translatedBy(x: measures.translate(scale: unScale, for: index, source: indexPath), y: 0.0)

@@ -56,16 +56,19 @@ extension KeyboardHandlerController {
     }
 
     @objc func keyboardWillShowOrHide(notification: NSNotification) {
-        if let scrollView = mainScroll, let userInfo = notification.userInfo, let endValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey], let durationValue = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey], let curveValue = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] {
-            let endRect = view.convert((endValue as AnyObject).cgRectValue, from: view.window)
-            let keyboardOverlap = scrollView.frame.maxY - endRect.origin.y
-            scrollView.contentInset.bottom = keyboardOverlap
-            scrollView.scrollIndicatorInsets.bottom = keyboardOverlap
-            let duration = (durationValue as AnyObject).doubleValue
-            let options = UIView.AnimationOptions(rawValue: UInt((curveValue as AnyObject).integerValue << 16))
-            UIView.animate(withDuration: duration!, delay: 0, options: options, animations: {
-                self.view.layoutIfNeeded()
-            }, completion: nil)
-        }
+        guard let scrollView = mainScroll,
+              let userInfo = notification.userInfo,
+              let endValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey],
+              let durationValue = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey],
+              let curveValue = userInfo[UIResponder.keyboardAnimationCurveUserInfoKey] else { return }
+        let endRect = view.convert((endValue as AnyObject).cgRectValue, from: view.window)
+        let keyboardOverlap = scrollView.frame.maxY - endRect.origin.y
+        scrollView.contentInset.bottom = keyboardOverlap
+        scrollView.scrollIndicatorInsets.bottom = keyboardOverlap
+        let duration = (durationValue as AnyObject).doubleValue
+        let options = UIView.AnimationOptions(rawValue: UInt((curveValue as AnyObject).integerValue << 16))
+        UIView.animate(withDuration: duration ?? 0, delay: 0, options: options, animations: {
+            self.view.layoutIfNeeded()
+        }, completion: nil)
     }
 }

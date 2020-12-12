@@ -49,7 +49,7 @@ final class DynmicCollectionViewUITests: XCTestCase {
         app.swipeDown()
         app.swipeUp()
         XCTAssertFalse(isKeyboardShown)
-        XCTAssertEqual( textView.value as! String, userInput)
+        XCTAssertEqual(try XCTUnwrap(textView.value as? String), userInput)
     }
 
     func testAppGesturesFunctionality() throws {
@@ -70,8 +70,6 @@ final class DynmicCollectionViewUITests: XCTestCase {
             titleTextView.doubleTap()
             XCTAssertLessThan(app.buttons["Notes"].frame.width, titleTextView.frame.width)
             XCTAssertEqual(app.buttons["Name"].frame.width, app.buttons["Notes"].frame.width)
-        }
-        func assertScalingCell() {
         }
 
         assertClickOnHeaderMinimizeColumnWidth()
