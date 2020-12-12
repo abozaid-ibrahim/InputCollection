@@ -23,10 +23,13 @@ extension UIViewController {
 }
 
 protocol KeyboardAutoHandling {
-    var mainScroll: UIScrollView? { get }
 }
 
-class KeyboardHandlerController: UIViewController, KeyboardAutoHandling {
+class KeyboardHandlerController: UIViewController {
+    var mainScroll: UIScrollView? {
+        return nil
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         subscribeToNotification(UIResponder.keyboardWillShowNotification, selector: #selector(keyboardWillShowOrHide))
@@ -42,11 +45,7 @@ class KeyboardHandlerController: UIViewController, KeyboardAutoHandling {
 
 // MARK: Textfield Visibility Handling with Scroll
 
-extension KeyboardHandlerController {
-    var mainScroll: UIScrollView? {
-        return view.subviews.first(where: { $0.isKind(of: UIScrollView.self) }) as? UIScrollView
-    }
-
+extension KeyboardHandlerController: KeyboardAutoHandling {
     func subscribeToNotification(_ notification: NSNotification.Name, selector: Selector) {
         NotificationCenter.default.addObserver(self, selector: selector, name: notification, object: nil)
     }
@@ -55,7 +54,7 @@ extension KeyboardHandlerController {
         NotificationCenter.default.removeObserver(self)
     }
 
-    @objc func keyboardWillShowOrHide(notification: NSNotification) {
+    @objc private func keyboardWillShowOrHide(notification: NSNotification) {
         guard let scrollView = mainScroll,
               let userInfo = notification.userInfo,
               let endValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey],

@@ -13,6 +13,9 @@ final class InputCollectionController: KeyboardHandlerController {
     let viewModel: InputViewModelType
     private(set) lazy var measures = CollectionMeasures(screenWidth: self.collectionView.bounds.width)
     private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView, measures: measures)
+    override var mainScroll: UIScrollView? {
+        return collectionView
+    }
 
     private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
