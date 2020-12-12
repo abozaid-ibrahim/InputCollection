@@ -112,13 +112,3 @@ private extension InputCollectionCell {
         textView.becomeFirstResponder()
     }
 }
-#if DEBUG
-@available(iOS 13.0.0, *)
-struct InputCollectionCellPreview: PreviewProvider {
-    static var previews: some View {
-        return Group {
-            UIKitViewPreview(view: InputCollectionCell(frame: UIScreen.main.bounds))
-        }
-    }
-}
-#endif

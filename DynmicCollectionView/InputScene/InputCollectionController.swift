@@ -107,14 +107,3 @@ extension String {
     static var notes: String { return "Notes" }
     static var sapCollection: String { return "Input Collection" }
 }
-
-#if DEBUG
-    @available(iOS 13.0.0, *)
-    struct InputCollectionControllerPreview: PreviewProvider {
-        static var previews: some View {
-            return Group {
-                UIKitViewPreview(view: InputCollectionController().view)
-            }
-        }
-    }
-#endif

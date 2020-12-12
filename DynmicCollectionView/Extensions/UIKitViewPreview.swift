@@ -11,16 +11,16 @@ import Foundation
 import SwiftUI
 import UIKit
 
-struct UIKitViewPreview: UIViewRepresentable {
-    let view: UIView
-    init(view: UIView) {
-        self.view = view
-    }
-
-    func makeUIView(context: Context) -> UIView {
-        return view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
-    }
-}
+//struct UIKitViewPreview: UIViewRepresentable {
+//    let view: UIView
+//    init(view: UIView) {
+//        self.view = view
+//    }
+//
+//    func makeUIView(context: Context) -> UIView {
+//        return view
+//    }
+//
+//    func updateUIView(_ uiView: UIView, context: Context) {
+//    }
+//}

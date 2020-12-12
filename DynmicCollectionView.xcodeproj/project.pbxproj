@@ -10,6 +10,7 @@
 		6C8248D02583CDA400675F2E /* UIColor+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8248CF2583CDA400675F2E /* UIColor+App.swift */; };
 		6C8248E425841CB000675F2E /* UICollectionView+Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8248E325841CB000675F2E /* UICollectionView+Cell.swift */; };
 		6C8248EC2584D20D00675F2E /* KeyboardAutoHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8248EB2584D20D00675F2E /* KeyboardAutoHandling.swift */; };
+		6C8249052584EEB700675F2E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6C8249042584EEB700675F2E /* README.md */; };
 		6CA3D50825838AB90039741E /* InputItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA3D50725838AB90039741E /* InputItem.swift */; };
 		6CA3D510258391EA0039741E /* InputCollectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */; };
 		6CBAF991257C5F2600C2AE98 /* KeypadToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */; };
@@ -26,7 +27,6 @@
 		6CC24F86257AB12C0004446C /* UIView+Constrains.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F85257AB12C0004446C /* UIView+Constrains.swift */; };
 		6CC24F88257AC8720004446C /* InputCollectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F87257AC8720004446C /* InputCollectionHeader.swift */; };
 		6CC24F8A257AC8A20004446C /* InputCollectionDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F89257AC8A20004446C /* InputCollectionDataSource.swift */; };
-		6CC24F8D257AEBD60004446C /* UIKitViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */; };
 		6CCD76B22581AE9000EAB9F3 /* DeleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */; };
 		6CF9CCF72580FF4A004621FB /* ResizeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */; };
 /* End PBXBuildFile section */
@@ -53,6 +53,7 @@
 		6C8248E325841CB000675F2E /* UICollectionView+Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionView+Cell.swift"; sourceTree = "<group>"; };
 		6C8248EB2584D20D00675F2E /* KeyboardAutoHandling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAutoHandling.swift; sourceTree = "<group>"; };
 		6C8248FA2584EBC100675F2E /* DynmicCollectionView.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = DynmicCollectionView.xctestplan; sourceTree = "<group>"; };
+		6C8249042584EEB700675F2E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6CA3D50725838AB90039741E /* InputItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputItem.swift; sourceTree = "<group>"; };
 		6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionViewModel.swift; sourceTree = "<group>"; };
 		6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeypadToolbar.swift; sourceTree = "<group>"; };
@@ -75,7 +76,6 @@
 		6CC24F85257AB12C0004446C /* UIView+Constrains.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Constrains.swift"; sourceTree = "<group>"; };
 		6CC24F87257AC8720004446C /* InputCollectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionHeader.swift; sourceTree = "<group>"; };
 		6CC24F89257AC8A20004446C /* InputCollectionDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCollectionDataSource.swift; sourceTree = "<group>"; };
-		6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitViewPreview.swift; sourceTree = "<group>"; };
 		6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteCell.swift; sourceTree = "<group>"; };
 		6CF9CCF62580FF4A004621FB /* ResizeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizeAnimator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,6 +108,7 @@
 		6CC24F44257A7AE30004446C = {
 			isa = PBXGroup;
 			children = (
+				6C8249042584EEB700675F2E /* README.md */,
 				6CC24F4F257A7AE30004446C /* DynmicCollectionView */,
 				6CC24F66257A7AE50004446C /* DynmicCollectionViewTests */,
 				6CC24F71257A7AE50004446C /* DynmicCollectionViewUITests */,
@@ -130,7 +131,7 @@
 			children = (
 				6CC24F8B257AEBC20004446C /* Extensions */,
 				6CF9CD1025811EF7004621FB /* Components */,
-				6CF9CD0F25811E8F004621FB /* InputCollectionScene */,
+				6CF9CD0F25811E8F004621FB /* InputScene */,
 				6CC24F82257A7B330004446C /* SupportingFiles */,
 			);
 			path = DynmicCollectionView;
@@ -170,7 +171,6 @@
 		6CC24F8B257AEBC20004446C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				6CC24F8C257AEBD60004446C /* UIKitViewPreview.swift */,
 				6CC24F85257AB12C0004446C /* UIView+Constrains.swift */,
 				6CBAF990257C5F2600C2AE98 /* KeypadToolbar.swift */,
 				6CBAF99A257C6CE100C2AE98 /* IndexPath.swift */,
@@ -181,7 +181,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		6CF9CD0F25811E8F004621FB /* InputCollectionScene */ = {
+		6CF9CD0F25811E8F004621FB /* InputScene */ = {
 			isa = PBXGroup;
 			children = (
 				6CA3D50F258391EA0039741E /* InputCollectionViewModel.swift */,
@@ -192,7 +192,7 @@
 				6CCD76B12581AE9000EAB9F3 /* DeleteCell.swift */,
 				6CA3D50725838AB90039741E /* InputItem.swift */,
 			);
-			path = InputCollectionScene;
+			path = InputScene;
 			sourceTree = "<group>";
 		};
 		6CF9CD1025811EF7004621FB /* Components */ = {
@@ -220,6 +220,8 @@
 			dependencies = (
 			);
 			name = DynmicCollectionView;
+			packageProductDependencies = (
+			);
 			productName = DynmicCollectionView;
 			productReference = 6CC24F4D257A7AE30004446C /* DynmicCollectionView.app */;
 			productType = "com.apple.product-type.application";
@@ -292,6 +294,8 @@
 				Base,
 			);
 			mainGroup = 6CC24F44257A7AE30004446C;
+			packageReferences = (
+			);
 			productRefGroup = 6CC24F4E257A7AE30004446C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -308,6 +312,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6C8249052584EEB700675F2E /* README.md in Resources */,
 				6CC24F5D257A7AE50004446C /* LaunchScreen.storyboard in Resources */,
 				6CC24F5A257A7AE50004446C /* Assets.xcassets in Resources */,
 			);
@@ -344,7 +349,6 @@
 				6CBAF99B257C6CE100C2AE98 /* IndexPath.swift in Sources */,
 				6CC24F86257AB12C0004446C /* UIView+Constrains.swift in Sources */,
 				6CC24F8A257AC8A20004446C /* InputCollectionDataSource.swift in Sources */,
-				6CC24F8D257AEBD60004446C /* UIKitViewPreview.swift in Sources */,
 				6C8248EC2584D20D00675F2E /* KeyboardAutoHandling.swift in Sources */,
 				6CBAF991257C5F2600C2AE98 /* KeypadToolbar.swift in Sources */,
 				6CBAF996257C644800C2AE98 /* Measures.swift in Sources */,
