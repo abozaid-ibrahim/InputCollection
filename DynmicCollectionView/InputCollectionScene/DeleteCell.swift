@@ -10,9 +10,7 @@ import SwiftUI
 import UIKit
 
 final class DeleteCell: UICollectionViewCell {
-    static let identifier = "DeleteCell"
     private var tapEvent: DoubleTapEvent?
-
     private lazy var button: UIButton = {
         let view = UIButton()
         if let image = UIImage(named: "delete-icon") {
@@ -37,8 +35,9 @@ final class DeleteCell: UICollectionViewCell {
         tapEvent = nil
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("no implemented")
     }
 }
 
@@ -46,7 +45,7 @@ private extension DeleteCell {
     func setup() {
         contentView.backgroundColor = .clear
         contentView.addSubview(button)
-        button.setConstrainsEqualToParentEdges(top: 8, bottom: 8, leading: 8, trailing: 8)
+        button.setConstrainsEqualToParentEdges(top: 12, bottom: 12, leading: 12, trailing: 12)
     }
 
     @objc func didTap(_ sender: UITapGestureRecognizer) {

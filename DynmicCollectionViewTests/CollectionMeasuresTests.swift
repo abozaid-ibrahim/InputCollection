@@ -11,9 +11,10 @@ import XCTest
 
 final class CollectionMeasuresTests: XCTestCase {
     private let accuracy: CGFloat = 0.0000001
+    private let constants = MockedMeasures()
     private var measures: CollectionMeasures!
     override func setUpWithError() throws {
-        measures = CollectionMeasures(screenWidth: 400)
+        measures = CollectionMeasures(screenWidth: 400,measures: constants)
         measures.insertRow()
     }
 
@@ -21,7 +22,7 @@ final class CollectionMeasuresTests: XCTestCase {
         XCTAssertEqual(measures.columnWidths[0], 100)
         XCTAssertEqual(measures.columnWidths[1], 100)
         XCTAssertEqual(measures.columnWidths[2], 100)
-        XCTAssertEqual(measures.height(for: .init(position: 0)), Measures.defaultRowHeight)
+        XCTAssertEqual(measures.height(for: .init(position: 0)), constants.defaultRowHeight)
     }
 
     func testScaleCellWidthByPinch() throws {
@@ -40,22 +41,19 @@ final class CollectionMeasuresTests: XCTestCase {
         measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
         XCTAssertEqual(measures.columnWidths[1], 140,
                        accuracy: accuracy)
-        XCTAssertEqual(measures.columnWidths[0], Measures.defaultColumnWidth,
+        XCTAssertEqual(measures.columnWidths[0], constants.defaultColumnWidth,
                        accuracy: accuracy)
     }
 
-    func testScaleCellToMaxHeight() throws {
-        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.1)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1,
-                       accuracy: accuracy)
+    func testScaleCellToHeightWhenTextChanged() throws {
+        let change = measures.set(height: 196, for: 2, with: 4)
+        XCTAssertTrue(change)
+        XCTAssertEqual(measures.height(for: .init(position: 0)), 200, accuracy: accuracy)
+        XCTAssertEqual(measures.height(for: .init(position: 1)), 200, accuracy: accuracy)
+        XCTAssertEqual(measures.height(for: .init(position: 2)), 200, accuracy: accuracy)
 
-        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1 * 1.2,
-                       accuracy: accuracy)
-
-        measures.updateCellSizeScale(for: .init(position: 1), scale: 1.2)
-        XCTAssertEqual(measures.height(for: .init(position: 1)), Measures.defaultRowHeight * 1.1 * 1.2 * 1.2,
-                       accuracy: accuracy)
+        let updateUI = measures.set(height: 196, for: 2)
+        XCTAssertFalse(updateUI)
     }
 
     func testScaleCellWidthCantExceedMinimuimWidthToOtherColumns() throws {
@@ -92,7 +90,7 @@ final class CollectionMeasuresTests: XCTestCase {
 
     func testSqueezeColumn() {
         measures.squeezeColumn(of: 0, squeeze: true)
-        XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), Measures.defaultColumnWidth)
+        XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), constants.defaultColumnWidth)
 
         measures.squeezeColumn(of: 0, squeeze: false)
         XCTAssertEqual(measures.columnWidth(for: .init(position: 0)), 140)
@@ -125,5 +123,18 @@ final class CollectionMeasuresTests: XCTestCase {
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 4), Array(indexes[4 ... 6]))
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 10), Array(indexes[8 ... 10]))
         XCTAssertEqual(measures.indexPathsInTheSameRow(for: 12), Array(indexes[12 ... 14]))
+    }
+}
+struct MockedMeasures:MeasuresType{
+    let columnsCount = 3
+    let defaultRowHeight: CGFloat = 80
+    let defaultColumnWidth: CGFloat = 80
+    let deleteButtonWidth: CGFloat = 100
+    func rowDefaultHeight() -> [CGFloat] {
+        return .init(repeating: defaultRowHeight, count: columnsCount)
+    }
+
+    func columnMinimuimWidth() -> [CGFloat] {
+        return .init(repeating: defaultColumnWidth, count: columnsCount)
     }
 }

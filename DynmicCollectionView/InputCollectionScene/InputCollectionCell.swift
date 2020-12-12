@@ -11,13 +11,12 @@ import UIKit
 
 typealias DoubleTapEvent = () -> Void
 typealias PinchEvent = (UIPinchGestureRecognizer) -> Void
-typealias TextChanged = (UIPinchGestureRecognizer) -> Void
+typealias TextChangedEvent = ((text: String, fitHeight: CGFloat)) -> Void
 
 final class InputCollectionCell: UICollectionViewCell {
-    static let reuseIdentifier = "InputCollectionCellID"
     private var pinchExpandUpdater: PinchEvent?
     private var doubleTapEvent: DoubleTapEvent?
-
+    private var textChangedEvent: TextChangedEvent?
     lazy var textView: UITextView = {
         let view = UITextView()
         view.showsVerticalScrollIndicator = false
@@ -35,10 +34,13 @@ final class InputCollectionCell: UICollectionViewCell {
 
     func set(text: String,
              onDoubleTap: @escaping DoubleTapEvent,
-             onPinch: @escaping PinchEvent) {
+             onPinch: @escaping PinchEvent,
+             onTextChanged: @escaping TextChangedEvent) {
         doubleTapEvent = onDoubleTap
         pinchExpandUpdater = onPinch
+        textChangedEvent = onTextChanged
         textView.text = text
+        textView.delegate = self
     }
 
     override init(frame: CGRect) {
@@ -50,6 +52,8 @@ final class InputCollectionCell: UICollectionViewCell {
         super.prepareForReuse()
         doubleTapEvent = nil
         pinchExpandUpdater = nil
+        textChangedEvent = nil
+        textView.delegate = nil
     }
 
     @available(*, unavailable)
@@ -58,13 +62,17 @@ final class InputCollectionCell: UICollectionViewCell {
     }
 }
 
+extension InputCollectionCell: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        let newSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width,
+                                                   height: CGFloat.greatestFiniteMagnitude))
+        textChangedEvent?((text: textView.text, fitHeight: newSize.height))
+    }
+}
+
 private extension InputCollectionCell {
     func setup() {
-        if #available(iOS 13.0, *) {
-            contentView.backgroundColor = .systemGray
-        } else {
-            contentView.backgroundColor = .darkGray
-        }
+        backgroundColor = .themeLightGray
         contentView.addSubview(textView)
         textView.setConstrainsEqualToParentEdges(top: 1, bottom: 1, leading: 1, trailing: 1)
         addGestureRecognizers()
@@ -101,9 +109,6 @@ private extension InputCollectionCell {
     }
 
     @objc func didTap(_ sender: UITapGestureRecognizer) {
-        guard textView.canBecomeFirstResponder, !textView.isFirstResponder else {
-            return
-        }
         textView.becomeFirstResponder()
     }
 }

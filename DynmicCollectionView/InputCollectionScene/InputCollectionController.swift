@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 
 final class InputCollectionController: UIViewController {
-    let viewModel = InputViewModel()
+    let viewModel: InputViewModelType
     private(set) lazy var measures = CollectionMeasures(screenWidth: self.collectionView.bounds.width)
     private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView, measures: measures)
 
@@ -27,7 +27,7 @@ final class InputCollectionController: UIViewController {
     }()
 
     private(set) lazy var headerView: InputCollectionHeader = {
-        let view = InputCollectionHeader(with: ["Name", "Title", "Notes"])
+        let view = InputCollectionHeader(with: [.name, .title, .notes])
         view.doubleClick.subscribe { [weak self] in
             guard let self = self,
                   $0 >= 0 else { return }
@@ -45,11 +45,11 @@ final class InputCollectionController: UIViewController {
         stack.axis = .vertical
         stack.addArrangedSubview(self.headerView)
         stack.addArrangedSubview(self.collectionView)
-
         return stack
     }()
 
-    init() {
+    init(with viewModel: InputViewModelType = InputViewModel()) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -61,9 +61,8 @@ final class InputCollectionController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareCollection()
-
-        title = "Sap Collection"
-        navigationItem.rightBarButtonItem = .init(title: "Add",
+        title = .sapCollection
+        navigationItem.rightBarButtonItem = .init(title: .add,
                                                   style: .plain,
                                                   target: self,
                                                   action: #selector(addRow(_:)))
@@ -89,31 +88,24 @@ final class InputCollectionController: UIViewController {
     private func prepareCollection() {
         view.addSubview(contentContainer)
         contentContainer.setConstrainsEqualToSafeArea()
-        collectionView.register(InputCollectionCell.self,
-                                forCellWithReuseIdentifier: InputCollectionCell.reuseIdentifier)
-        collectionView.register(DeleteCell.self,
-                                forCellWithReuseIdentifier: DeleteCell.identifier)
+        collectionView.register(InputCollectionCell.self)
+        collectionView.register(DeleteCell.self)
         collectionView.backgroundColor = .clear
-        view.backgroundColor = .brown
+        view.backgroundColor = .themeLightGray
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        measures.update(screenWidth: size.width)
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 }
 
-extension InputCollectionController: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        let newSize = textView.sizeThatFits(CGSize(width: textView.frame.size.width,
-                                                   height: CGFloat.greatestFiniteMagnitude))
-        let index = textView.tag
-        viewModel.currentEditingIndex = index
-        viewModel.items[index] = .input(textView.text)
-        guard measures.set(height: newSize.height, for: index) else { return }
-        reloadRow(row: index)
-    }
-
-    func reloadRow(row: Int) {
-        UIView.performWithoutAnimation {
-            collectionView.reloadItems(at: measures.indexPathsInTheSameRow(for: row))
-        }
-    }
+extension String {
+    static var add: String { return "Add" }
+    static var name: String { return "Name" }
+    static var title: String { return "Title" }
+    static var notes: String { return "Notes" }
+    static var sapCollection: String { return "Input Collection" }
 }
 
 @available(iOS 13.0.0, *)

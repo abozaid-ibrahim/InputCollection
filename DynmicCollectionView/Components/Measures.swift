@@ -8,33 +8,63 @@
 
 import Foundation
 import UIKit
-
-struct Measures {
-    static let columnsCount = 3
-    static let defaultRowHeight: CGFloat = 50
-    static let defaultColumnWidth: CGFloat = 80
-    static let deleteButtonWidth: CGFloat = 50
+protocol MeasuresType {
+    var columnsCount: Int { get }
+    var defaultRowHeight: CGFloat { get }
+    var defaultColumnWidth: CGFloat { get }
+    var deleteButtonWidth: CGFloat { get }
+    func rowDefaultHeight() -> [CGFloat]
+    func columnMinimuimWidth() -> [CGFloat]
 }
 
-// captuer cells height width
-// resize them depenign on content and user inputs.
-final class CollectionMeasures {
-    let screenWidth: CGFloat
-    init(screenWidth: CGFloat) {
-        self.screenWidth = screenWidth - Measures.deleteButtonWidth
+struct Measures: MeasuresType {
+    let columnsCount = 3
+    let defaultRowHeight: CGFloat = 50
+    let defaultColumnWidth: CGFloat = 80
+    let deleteButtonWidth: CGFloat = 50
+    func rowDefaultHeight() -> [CGFloat] {
+        return .init(repeating: defaultRowHeight, count: columnsCount)
     }
 
-    private(set) lazy var columnWidths: [CGFloat] = .init(repeating: self.screenWidth / CGFloat(Measures.columnsCount), count: Measures.columnsCount)
-    private(set) lazy var heightMatrix: [[CGFloat]] = []
-    private lazy var rowDefaultHeight: [CGFloat] = .init(repeating: Measures.defaultRowHeight, count: Measures.columnsCount)
-    private lazy var columnMinimuimWidth: [CGFloat] = .init(repeating: Measures.defaultColumnWidth, count: Measures.columnsCount)
+    func columnMinimuimWidth() -> [CGFloat] {
+        return .init(repeating: defaultColumnWidth, count: columnsCount)
+    }
+}
 
-    var columnsCountExcludeCurrent: CGFloat {
-        return CGFloat(Measures.columnsCount - 1)
+protocol CollectionMeasuresType {
+}
+
+/// Capture cells size, resize them when text changed, user inputs.
+final class CollectionMeasures: CollectionMeasuresType {
+    /// holds the width of the columns which equal to column count
+    private(set) lazy var columnWidths: [CGFloat] = .init(repeating: self.screenWidth / CGFloat(measures.columnsCount),
+                                                          count: measures.columnsCount)
+
+    /// 2D matrix holds the max height for every single item on the collection view.
+    private(set) lazy var heightMatrix: [[CGFloat]] = []
+    private(set) var screenWidth: CGFloat
+    private var measures: MeasuresType
+    init(screenWidth: CGFloat, measures: MeasuresType = Measures()) {
+        self.measures = measures
+        self.screenWidth = screenWidth - measures.deleteButtonWidth
+    }
+
+    /// number of items in the same column except the current item.
+    private var neighborsCount: CGFloat {
+        return CGFloat(measures.columnsCount - 1)
+    }
+
+    func update(screenWidth: CGFloat) {
+        let previousWidth = self.screenWidth
+        self.screenWidth = screenWidth - measures.deleteButtonWidth
+        let ratio = self.screenWidth / previousWidth
+        for index in 0 ..< columnWidths.count {
+            columnWidths[index] = columnWidths[index] * ratio
+        }
     }
 
     func insertRow() {
-        heightMatrix.append(rowDefaultHeight)
+        heightMatrix.append(measures.rowDefaultHeight())
     }
 
     func deleteRow(with deleteButtonIndex: Int) {
@@ -45,50 +75,49 @@ final class CollectionMeasures {
         return heightMatrix[row(for: index.row)].max() ?? 0
     }
 
-    func set(height: CGFloat, for position: Int) -> Bool {
+    func set(height: CGFloat, for position: Int, with newLineMargin: CGFloat = 4) -> Bool {
         let r = row(for: position)
         let c = column(for: position)
-        guard heightMatrix[r][c] != height else {
+        guard heightMatrix[r][c] != height + newLineMargin else {
             return false
         }
-        heightMatrix[r][c] = height
+        heightMatrix[r][c] = height + newLineMargin
         return true
     }
 
     func squeezeColumn(of position: Int, squeeze: Bool) {
         let index = column(for: position)
         if squeeze {
-            let diff = columnWidths[index] - Measures.defaultColumnWidth
-            columnWidths[index] = Measures.defaultColumnWidth
-            let expandedIndex = index < (Measures.columnsCount - 1) ? index + 1 : index - 1
+            let diff = columnWidths[index] - measures.defaultColumnWidth
+            columnWidths[index] = measures.defaultColumnWidth
+            let expandedIndex = index < (measures.columnsCount - 1) ? index + 1 : index - 1
             columnWidths[expandedIndex] = columnWidths[expandedIndex] + diff
-
         } else {
-            for i in 0 ..< columnWidths.count {
-                columnWidths[i] = Measures.defaultColumnWidth
+            for index in 0 ..< columnWidths.count {
+                columnWidths[index] = measures.defaultColumnWidth
             }
-            let allItemsWidth = columnsCountExcludeCurrent * Measures.defaultColumnWidth
+            let allItemsWidth = neighborsCount * measures.defaultColumnWidth
             columnWidths[index] = screenWidth - allItemsWidth
         }
     }
 
     func allowedWidth(for column: Int) -> CGFloat {
-        let cellsMinimuim = columnMinimuimWidth.reduce(0, +) - columnMinimuimWidth[column]
+        let cellsMinimuim = measures.columnMinimuimWidth().reduce(0, +) - measures.columnMinimuimWidth()[column]
         return screenWidth - cellsMinimuim
     }
 
     func canScaleWidth(for indexPath: IndexPath, scale: CGFloat) -> Bool {
-        let col = column(for: indexPath.row)
-        let newWidth = columnWidths[col] * scale
-        let maxWidth = allowedWidth(for: col)
-        let minWidth = columnMinimuimWidth[col]
+        let colum = column(for: indexPath.row)
+        let newWidth = columnWidths[colum] * scale
+        let maxWidth = allowedWidth(for: colum)
+        let minWidth = measures.columnMinimuimWidth()[colum]
         return (newWidth <= maxWidth) && (newWidth >= minWidth)
     }
 
     func unScaleValue(scale: CGFloat) -> CGFloat {
         let one: CGFloat = 1.00
         let d = scale > one ? scale - one : one - scale
-        let diff = d / columnsCountExcludeCurrent
+        let diff = d / neighborsCount
         let scaleFactorForOtherCells = (scale > one) ? one - diff : one + diff
         return scaleFactorForOtherCells
     }
@@ -97,7 +126,7 @@ final class CollectionMeasures {
         let onLeftSide = current.row < source.row
         let colum = column(for: current.row)
         let newWidth = columnWidths[colum] * scale
-        let margin = (newWidth - columnWidths[colum]) / columnsCountExcludeCurrent
+        let margin = (newWidth - columnWidths[colum]) / neighborsCount
         return onLeftSide ? margin : -margin
     }
 
@@ -108,61 +137,52 @@ final class CollectionMeasures {
         let maxWidth = allowedWidth(for: col)
         newWidth = newWidth <= maxWidth ? newWidth : maxWidth
 
-        let minWidth = columnMinimuimWidth[col]
+        let minWidth = measures.columnMinimuimWidth()[col]
         newWidth = newWidth >= minWidth ? newWidth : minWidth
         return newWidth
     }
 
     func updateCellSizeScale(for indexPath: IndexPath, scale: CGFloat) {
         let newWidth = widthAfterScale(for: indexPath, scale: scale)
-        for i in 0 ..< columnWidths.count {
-            if column(for: indexPath.row) == i {
-                columnWidths[i] = newWidth
-            } else {
-                columnWidths[i] = (screenWidth - newWidth) / columnsCountExcludeCurrent
-            }
+        let otherCellsWidth = (screenWidth - newWidth) / neighborsCount
+        for index in 0 ..< columnWidths.count {
+            columnWidths[index] = column(for: indexPath.row) == index ? newWidth : otherCellsWidth
         }
-//        let h = height(for: indexPath)
-//        set(height: h * scale, for: indexPath.row)
     }
 
     func columnWidth(for index: IndexPath) -> CGFloat {
         return columnWidths[column(for: index.row)]
     }
 
-    // 0,1,2,3..
     func row(for index: Int) -> Int {
-        //
-        return index / (Measures.columnsCount + 1)
+        return index / (measures.columnsCount + 1)
     }
 
-    // 0,1,2
     func column(for index: Int) -> Int {
-        return index % (Measures.columnsCount + 1)
+        return index % (measures.columnsCount + 1)
     }
 
-    // tested
     func indexPathsInTheSameRow(for position: Int, excludeMe: Bool = false) -> [IndexPath] {
         let rowStartIndex = position - column(for: position)
-        var data = (0 ..< Measures.columnsCount).map { IndexPath(position: $0 + rowStartIndex) }
+        var indexes = (0 ..< measures.columnsCount).map { IndexPath(position: $0 + rowStartIndex) }
         if excludeMe {
-            data.removeAll(where: { position == $0.row })
+            indexes.removeAll(where: { position == $0.row })
         }
-        return data
+        return indexes
     }
 
     func indexesOfDelete(for index: Int) -> [IndexPath] {
-        return Array(index - Measures.columnsCount ... index)
+        return Array(index - measures.columnsCount ... index)
             .map({ IndexPath(position: $0) })
     }
 
     func cellSize(for indexPath: IndexPath, isDeleteCell: Bool = false) -> CGSize {
         if isDeleteCell {
-            return .init(width: Measures.deleteButtonWidth,
-                         height: Measures.deleteButtonWidth)
+            return .init(width: measures.deleteButtonWidth,
+                         height: measures.deleteButtonWidth)
         } else {
-            return .init(width: columnWidth(for: indexPath) - 0.01,
-                         height: height(for: indexPath))
+            return .init(width: Int(columnWidth(for: indexPath)),
+                         height: Int(height(for: indexPath)))
         }
     }
 }

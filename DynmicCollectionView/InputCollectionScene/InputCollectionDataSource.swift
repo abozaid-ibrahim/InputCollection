@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension InputCollectionController: UICollectionViewDataSource, UICollectionViewDelegate {
+extension InputCollectionController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.items.count
     }
@@ -17,24 +17,22 @@ extension InputCollectionController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch viewModel.items[indexPath.row] {
         case .delete:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DeleteCell.identifier, for: indexPath) as! DeleteCell
-            cell.set(onTap: { [weak self] in self?.delete(row: indexPath.row) })
+            let cell = collectionView.dequeue(cell: DeleteCell.self, for: indexPath)
+            cell.set(onTap: { [unowned self] in self.delete(row: indexPath.row) })
             return cell
         case let .input(text):
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: InputCollectionCell.reuseIdentifier, for: indexPath) as! InputCollectionCell
+            let cell = collectionView.dequeue(cell: InputCollectionCell.self, for: indexPath)
             cell.set(text: text,
-                     onDoubleTap: { [weak self] in self?.squeese(row: indexPath.row) },
-                     onPinch: { [weak self] recognizer in self?.scale(cell: cell, at: indexPath, with: recognizer) })
-            cell.textView.tag = indexPath.row
-            cell.textView.delegate = self
+                     onDoubleTap: { [unowned self] in self.squeese(row: indexPath.row) },
+                     onPinch: { [unowned self] in self.scale(cell: cell, at: indexPath, with: $0) },
+                     onTextChanged: { [unowned self] in self.textDidChange($0, indexPath, $1) })
             return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.row == viewModel.currentEditingIndex,
-              let cell = cell as? InputCollectionCell,
-              cell.textView.canBecomeFirstResponder else { return }
+        guard viewModel.shouldShowKeypad(at: indexPath.row),
+              let cell = cell as? InputCollectionCell else { return }
         cell.textView.becomeFirstResponder()
     }
 }
@@ -62,7 +60,19 @@ private extension InputCollectionController {
             headerView.updateLabelsWidth(with: measures.columnWidths)
             collectionView.reloadData()
         default:
-            print(">> \(recognizer)")
+            print(">>rec \(recognizer)")
+        }
+    }
+
+    func textDidChange(_ text: String, _ index: IndexPath, _ height: CGFloat) {
+        viewModel.textChanged(text, at: index.row)
+        guard measures.set(height: height, for: index.row) else { return }
+        reloadRow(row: index.row)
+    }
+
+    func reloadRow(row: Int) {
+        UIView.performWithoutAnimation {
+            collectionView.reloadItems(at: measures.indexPathsInTheSameRow(for: row))
         }
     }
 }

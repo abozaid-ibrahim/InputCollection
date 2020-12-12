@@ -14,24 +14,23 @@ protocol InputCollectionHeaderType {
 }
 
 final class InputCollectionHeader: UIView, InputCollectionHeaderType {
-    static let identifier = "InputCollectionHeader"
     private let widthConstrainID = "width"
+    private let spacing: CGFloat = 1
     let doubleClick: Observable<Int> = .init(-1)
-    var items: [String] = []
+    private var items: [String] = []
 
     private lazy var contentContainer: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .fill
         stack.axis = .horizontal
         stack.distribution = .fill
+        stack.spacing = spacing
         return stack
     }()
 
     private lazy var emptyHeaderView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.widthAnchor.constraint(equalToConstant: Measures.deleteButtonWidth).isActive = true
         return view
     }()
 
@@ -41,14 +40,12 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         label.isUserInteractionEnabled = true
         label.text = title
         label.translatesAutoresizingMaskIntoConstraints = false
-        let const = label.widthAnchor.constraint(equalToConstant: bounds.width / CGFloat(Measures.columnsCount))
-        const.identifier = widthConstrainID
-        const.isActive = true
-        if #available(iOS 13.0, *) {
-            label.backgroundColor = .systemGray6
-        } else {
-            label.backgroundColor = .gray
-        }
+        let widthConstrain = label.widthAnchor.constraint(equalToConstant: (bounds.width / CGFloat(items.count)) - spacing)
+        widthConstrain.identifier = widthConstrainID
+        widthConstrain.isActive = true
+        label.backgroundColor = .themeWhite
+        label.layer.borderWidth = 2 * spacing
+        label.layer.borderColor = UIColor.themeGray.cgColor
         return label
     }
 
@@ -64,7 +61,6 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         contentContainer.addArrangedSubview(emptyHeaderView)
         translatesAutoresizingMaskIntoConstraints = false
         heightAnchor.constraint(equalToConstant: 40).isActive = true
-
     }
 
     func updateLabelsWidth(with widths: [CGFloat]) {
@@ -73,7 +69,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
             guard let widthConstrain = label.constraints.first(where: { $0.identifier == widthConstrainID }) else {
                 continue
             }
-            widthConstrain.constant = widths[index]
+            widthConstrain.constant = widths[index] - spacing
             index += 1
         }
     }

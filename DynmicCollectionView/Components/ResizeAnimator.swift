@@ -13,8 +13,8 @@ protocol ResizeAnimatorType {
 }
 
 final class ResizeAnimator: ResizeAnimatorType {
-    let collectionView: UICollectionView
-    let measures: CollectionMeasures
+    private let collectionView: UICollectionView
+    private let measures: CollectionMeasures
     init(collectionView: UICollectionView,
          measures: CollectionMeasures) {
         self.collectionView = collectionView
