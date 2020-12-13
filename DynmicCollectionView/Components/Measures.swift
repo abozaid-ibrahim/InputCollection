@@ -91,8 +91,7 @@ final class CollectionMeasures {
     func unScaleValue(scale: CGFloat) -> CGFloat {
         let one: CGFloat = 1.00
         let diff = abs(scale - one) / neighborsCount
-        let scaleFactorForOtherCells = (scale > one) ? one - diff : one + diff
-        return scaleFactorForOtherCells 
+        return (scale > one) ? one - diff : one + diff
     }
 
     func translate(scale: CGFloat, for current: IndexPath, source: IndexPath) -> CGFloat {

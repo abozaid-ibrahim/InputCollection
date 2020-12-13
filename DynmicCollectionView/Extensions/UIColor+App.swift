@@ -14,7 +14,7 @@ public extension UIColor {
         if #available(iOS 13, *) {
             return UIColor.systemGray6
         } else {
-            return UIColor.lightGray
+            return UIColor.groupTableViewBackground
         }
     }
 
