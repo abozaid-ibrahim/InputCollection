@@ -33,7 +33,6 @@ final class CollectionMeasures {
         let previousWidth = self.screenWidth
         self.screenWidth = screenWidth - measures.getMargins()
         let ratio = self.screenWidth / previousWidth
-        print(columnWidths)
         for index in 0 ..< columnWidths.count {
             columnWidths[index] = columnWidths[index] * ratio
         }

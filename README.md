@@ -47,4 +47,5 @@ This application uses the Model-View-ViewModel (referred to as MVVM) UI architec
 * Scene: input view.
 * Extensions: Group of app extensions.
 ## Todo
-- [ ] fix ui gletch of unscaling
+- [ ] fix ui glitch of unscaling
+- [ ] fix delete item animation
