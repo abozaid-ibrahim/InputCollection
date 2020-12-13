@@ -28,7 +28,6 @@ final class InputCollectionCell: UICollectionViewCell {
         view.addDoneButtonToKeypad()
         view.alwaysBounceVertical = false
         view.alwaysBounceHorizontal = false
-
         return view
     }()
 
@@ -74,7 +73,7 @@ private extension InputCollectionCell {
     func setup() {
         backgroundColor = .themeLightGray
         contentView.addSubview(textView)
-        textView.setConstrainsEqualToParentEdges(top: 1, bottom: 1, leading: 1, trailing: 1)
+        textView.setConstrainsEqualToParentEdges()
         addGestureRecognizers()
     }
 

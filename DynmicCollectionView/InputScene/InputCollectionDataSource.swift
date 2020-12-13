@@ -60,7 +60,7 @@ private extension InputCollectionController {
             headerView.updateLabelsWidth(with: measures.columnWidths)
             collectionView.reloadData()
         default:
-            print(">>rec \(recognizer)")
+            print(" \(recognizer)")
         }
     }
 
@@ -78,7 +78,10 @@ private extension InputCollectionController {
 }
 
 extension InputCollectionController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return measures.cellSize(for: indexPath, isDeleteCell: viewModel.items[indexPath.row] == .delete)
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return measures.cellSize(for: indexPath,
+                                 isDeleteCell: viewModel.items[indexPath.row] == .delete)
     }
 }

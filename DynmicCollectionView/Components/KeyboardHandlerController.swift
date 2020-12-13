@@ -9,52 +9,34 @@
 import Foundation
 import UIKit
 
-extension UIViewController {
-    func initializeHideKeyboard() {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
-            target: self,
-            action: #selector(dismissMyKeyboard))
-        view.addGestureRecognizer(tap)
-    }
-
-    @objc func dismissMyKeyboard() {
-        view.endEditing(true)
-    }
-}
-
-protocol KeyboardAutoHandling {
-}
-
-class KeyboardHandlerController: UIViewController {
+public class KeyboardHandlerController: UIViewController {
     var mainScroll: UIScrollView? {
         return nil
     }
 
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         subscribeToNotification(UIResponder.keyboardWillShowNotification, selector: #selector(keyboardWillShowOrHide))
         subscribeToNotification(UIResponder.keyboardWillHideNotification, selector: #selector(keyboardWillShowOrHide))
         initializeHideKeyboard()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromAllNotifications()
     }
+
+    public func unsubscribeFromAllNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
-// MARK: Textfield Visibility Handling with Scroll
-
-extension KeyboardHandlerController: KeyboardAutoHandling {
+private extension KeyboardHandlerController {
     func subscribeToNotification(_ notification: NSNotification.Name, selector: Selector) {
         NotificationCenter.default.addObserver(self, selector: selector, name: notification, object: nil)
     }
 
-    func unsubscribeFromAllNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    @objc private func keyboardWillShowOrHide(notification: NSNotification) {
+    @objc func keyboardWillShowOrHide(notification: NSNotification) {
         guard let scrollView = mainScroll,
               let userInfo = notification.userInfo,
               let endValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey],

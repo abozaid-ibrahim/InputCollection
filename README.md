@@ -2,7 +2,7 @@
 </p>
  <p align="center">
 <a href="https://developer.apple.com/swift/"><img src="https://img.shields.io/badge/Swift-5.0-orange.svg?style=flat" alt="Swift"/></a>
-<img src="https://img.shields.io/badge/Platform-iOS%2011.0+-lightgrey.svg" alt="Platform: iOS">
+<img src="https://img.shields.io/badge/Platform-iOS%2012.4+-lightgrey.svg" alt="Platform: iOS">
 <img src="https://img.shields.io/badge/XCode-12.2%2B-lightgrey">
 <img src="https://img.shields.io/badge/Code%20Coverage-89%25-brightgreen">
 </p>
@@ -14,7 +14,7 @@ Collection view acts like xcel sheet to take any text input
  </p>
 
 ## Getting Started
-- If this is your first time encountering swift/ios development, please follow [the instructions](https://developer.apple.com/support/xcode/) to set up Xcode and Swift on your Mac.
+- If this is your first time encountering swift/ios development, please follow [the instructions](https://developer.apple.com/support/xcode/) to set up XCode and Swift on your Mac.
 
 ## Setup Configs
 - Checkout master branch to run the latest version
@@ -39,10 +39,12 @@ PRODUCT_BUNDLE_IDENTIFIER = abozaid.DynamicCollection
 * [Command(cmd)] + R - Run app
 
 ## Architecture
-This application uses the Model-View-ViewModel (referred to as MVVM) UI architecture,
+This application uses the Model-View-ViewModel (referred to as MVVM) UI architecture.
 
 ## Folders Structure
 * SupportingFiles: Group app shared files, like app delegate, assets, info.plist, ...etc
 * Components: Include separate component, could be used outside the project.
 * Scene: input view.
 * Extensions: Group of app extensions.
+## Todo
+- [ ] fix ui gletch of unscaling

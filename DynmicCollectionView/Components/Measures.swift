@@ -15,13 +15,19 @@ protocol MeasuresType {
     var deleteButtonWidth: CGFloat { get }
     func rowDefaultHeight() -> [CGFloat]
     func columnMinimuimWidth() -> [CGFloat]
+    func getMargins() -> CGFloat
 }
 
 struct Measures: MeasuresType {
     let columnsCount = 3
+    let minimumLineSpacing: CGFloat = 1
     let defaultRowHeight: CGFloat = 50
     let defaultColumnWidth: CGFloat = 80
     let deleteButtonWidth: CGFloat = 50
+    func getMargins() -> CGFloat {
+        return (CGFloat(columnsCount) * minimumLineSpacing) + deleteButtonWidth
+    }
+
     func rowDefaultHeight() -> [CGFloat] {
         return .init(repeating: defaultRowHeight, count: columnsCount)
     }
@@ -31,11 +37,8 @@ struct Measures: MeasuresType {
     }
 }
 
-protocol CollectionMeasuresType {
-}
-
 /// Capture cells size, resize them when text changed, user inputs.
-final class CollectionMeasures: CollectionMeasuresType {
+final class CollectionMeasures {
     /// holds the width of the columns which equal to column count
     private(set) lazy var columnWidths: [CGFloat] = .init(repeating: self.screenWidth / CGFloat(measures.columnsCount),
                                                           count: measures.columnsCount)
@@ -46,7 +49,7 @@ final class CollectionMeasures: CollectionMeasuresType {
     private var measures: MeasuresType
     init(screenWidth: CGFloat, measures: MeasuresType = Measures()) {
         self.measures = measures
-        self.screenWidth = screenWidth - measures.deleteButtonWidth
+        self.screenWidth = screenWidth - measures.getMargins()
     }
 
     /// number of items in the same column except the current item.
@@ -56,13 +59,12 @@ final class CollectionMeasures: CollectionMeasuresType {
 
     func update(screenWidth: CGFloat) {
         let previousWidth = self.screenWidth
-        self.screenWidth = screenWidth - measures.deleteButtonWidth
+        self.screenWidth = screenWidth - measures.getMargins()
         let ratio = self.screenWidth / previousWidth
         print(columnWidths)
         for index in 0 ..< columnWidths.count {
             columnWidths[index] = columnWidths[index] * ratio
         }
-        print(columnWidths)
     }
 
     func insertRow() {

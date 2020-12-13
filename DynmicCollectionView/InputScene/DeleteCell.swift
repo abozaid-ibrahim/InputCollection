@@ -11,7 +11,7 @@ import UIKit
 
 final class DeleteCell: UICollectionViewCell {
     private var tapEvent: DoubleTapEvent?
-    private lazy var button: UIButton = {
+    private lazy var deleteButton: UIButton = {
         let view = UIButton()
         if let image = UIImage(named: "delete-icon") {
             view.setImage(image, for: .normal)
@@ -44,8 +44,8 @@ final class DeleteCell: UICollectionViewCell {
 private extension DeleteCell {
     func setup() {
         contentView.backgroundColor = .clear
-        contentView.addSubview(button)
-        button.setConstrainsEqualToParentEdges(top: 12, bottom: 12, leading: 12, trailing: 12)
+        contentView.addSubview(deleteButton)
+        deleteButton.setConstrainsEqualToParentEdges(top: 12, bottom: 12, leading: 12, trailing: 12)
     }
 
     @objc func didTap(_ sender: UITapGestureRecognizer) {

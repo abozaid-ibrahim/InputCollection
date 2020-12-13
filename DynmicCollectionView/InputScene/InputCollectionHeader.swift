@@ -10,11 +10,13 @@ import Foundation
 import SwiftUI
 import UIKit
 
-protocol InputCollectionHeaderType {
+protocol InputCollectionHeaderView: UIView {
+    init(with items: [String], onSelected: ItemSelectedEvent?)
+    func updateLabelsWidth(with widths: [CGFloat])
 }
 
 typealias ItemSelectedEvent = (Int) -> Void
-final class InputCollectionHeader: UIView, InputCollectionHeaderType {
+final class InputCollectionHeader: UIView, InputCollectionHeaderView {
     private let widthConstrainID = "width"
     private let spacing: CGFloat = 1
     private var selectedEvent: ItemSelectedEvent?
@@ -44,9 +46,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderType {
         let widthConstrain = label.widthAnchor.constraint(equalToConstant: (bounds.width / CGFloat(items.count)) - spacing)
         widthConstrain.identifier = widthConstrainID
         widthConstrain.isActive = true
-        label.backgroundColor = .themeWhite
-        label.layer.borderWidth = 2 * spacing
-        label.layer.borderColor = UIColor.themeGray.cgColor
+        label.backgroundColor = .themeLightGray
         return label
     }
 

@@ -11,16 +11,19 @@ import UIKit
 
 final class InputCollectionController: KeyboardHandlerController {
     let viewModel: InputViewModelType
-    private(set) lazy var measures = CollectionMeasures(screenWidth: self.collectionView.bounds.width)
-    private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView, measures: measures)
+    private let measuresValues = Measures()
+    private(set) lazy var measures = CollectionMeasures(screenWidth: self.collectionView.bounds.width,
+                                                        measures: measuresValues)
+    private(set) lazy var animator = ResizeAnimator(collectionView: self.collectionView,
+                                                    measures: measures)
     override var mainScroll: UIScrollView? {
         return collectionView
     }
 
     private(set) lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = measuresValues.minimumLineSpacing
+        layout.minimumInteritemSpacing = 1
         layout.sectionInset = .zero
         layout.scrollDirection = .vertical
         let collection = UICollectionView(frame: self.view.bounds, collectionViewLayout: layout)
@@ -29,16 +32,14 @@ final class InputCollectionController: KeyboardHandlerController {
         return collection
     }()
 
-    private(set) lazy var headerView: InputCollectionHeader = {
-        let view = InputCollectionHeader(with: [.name, .title, .notes], onSelected: { [weak self] in
+    private(set) lazy var headerView: InputCollectionHeaderView = {
+        InputCollectionHeader(with: [.name, .title, .notes], onSelected: { [weak self] in
             guard let self = self else { return }
             self.measures.squeezeColumn(of: $0, squeeze: true)
             self.headerView.updateLabelsWidth(with: self.measures.columnWidths)
             self.collectionView.reloadData()
 
         })
-
-        return view
     }()
 
     private lazy var contentContainer: UIStackView = {
@@ -97,7 +98,8 @@ final class InputCollectionController: KeyboardHandlerController {
         view.backgroundColor = .themeLightGray
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize,
+                                     with coordinator: UIViewControllerTransitionCoordinator) {
         measures.update(screenWidth: size.width)
         collectionView.collectionViewLayout.invalidateLayout()
     }

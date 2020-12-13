@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-extension UIColor {
+public extension UIColor {
     static var themeLightGray: UIColor {
         if #available(iOS 13, *) {
             return UIColor.systemGray6
         } else {
-            return UIColor.lightGray.withAlphaComponent(0.2)
+            return UIColor.lightGray
         }
     }
 
@@ -28,12 +28,8 @@ extension UIColor {
 
     static var themeWhite: UIColor {
         if #available(iOS 13, *) {
-            return UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
-                if UITraitCollection.userInterfaceStyle == .dark {
-                    return UIColor.black
-                } else {
-                    return UIColor.white
-                }
+            return UIColor { (collection: UITraitCollection) -> UIColor in
+                collection.userInterfaceStyle == .dark ? .black : .white
             }
         } else {
             return UIColor.white

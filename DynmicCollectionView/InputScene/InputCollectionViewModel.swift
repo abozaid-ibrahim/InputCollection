@@ -8,18 +8,20 @@
 
 import Foundation
 protocol InputViewModelType {
-    var items: [CollectionDataItem] { get }
     var currentEditingIndex: Int { get }
-    func delete(at indexes: [Int])
+    var items: [CollectionDataItem] { get }
     func appendNewRow()
+    func delete(at indexes: [Int])
     func shouldShowKeypad(at index: Int) -> Bool
     func textChanged(_ text: String, at index: Int)
 }
 
 final class InputViewModel: InputViewModelType {
     private var newCollectionRow: [CollectionDataItem] { [.input(""), .input(""), .input(""), .delete] }
+
     var items: [CollectionDataItem] = []
     var currentEditingIndex = -1
+
     func appendNewRow() {
         items.append(contentsOf: newCollectionRow)
     }

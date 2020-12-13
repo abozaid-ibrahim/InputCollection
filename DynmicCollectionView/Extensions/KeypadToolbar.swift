@@ -9,9 +9,11 @@
 import Foundation
 import UIKit
 
-extension UITextView {
+public extension UITextView {
     func addDoneButtonToKeypad() {
-        let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(hideKeypad))
+        let doneButton = UIBarButtonItem(title: "Done", style: .done,
+                                         target: self,
+                                         action: #selector(hideKeypad))
         let toolbar = UIToolbar()
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.items = [flexSpace, flexSpace, doneButton]
