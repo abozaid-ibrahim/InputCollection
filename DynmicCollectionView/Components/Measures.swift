@@ -8,34 +8,6 @@
 
 import Foundation
 import UIKit
-protocol MeasuresType {
-    var columnsCount: Int { get }
-    var defaultRowHeight: CGFloat { get }
-    var defaultColumnWidth: CGFloat { get }
-    var deleteButtonWidth: CGFloat { get }
-    func rowDefaultHeight() -> [CGFloat]
-    func columnMinimuimWidth() -> [CGFloat]
-    func getMargins() -> CGFloat
-}
-
-struct Measures: MeasuresType {
-    let columnsCount = 3
-    let minimumLineSpacing: CGFloat = 1
-    let defaultRowHeight: CGFloat = 50
-    let defaultColumnWidth: CGFloat = 80
-    let deleteButtonWidth: CGFloat = 50
-    func getMargins() -> CGFloat {
-        return (CGFloat(columnsCount) * minimumLineSpacing) + deleteButtonWidth
-    }
-
-    func rowDefaultHeight() -> [CGFloat] {
-        return .init(repeating: defaultRowHeight, count: columnsCount)
-    }
-
-    func columnMinimuimWidth() -> [CGFloat] {
-        return .init(repeating: defaultColumnWidth, count: columnsCount)
-    }
-}
 
 /// Capture cells size, resize them when text changed, user inputs.
 final class CollectionMeasures {
@@ -120,7 +92,7 @@ final class CollectionMeasures {
         let one: CGFloat = 1.00
         let diff = abs(scale - one) / neighborsCount
         let scaleFactorForOtherCells = (scale > one) ? one - diff : one + diff
-        return scaleFactorForOtherCells
+        return scaleFactorForOtherCells 
     }
 
     func translate(scale: CGFloat, for current: IndexPath, source: IndexPath) -> CGFloat {

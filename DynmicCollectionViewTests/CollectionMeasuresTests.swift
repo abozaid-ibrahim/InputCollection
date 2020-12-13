@@ -137,6 +137,10 @@ final class CollectionMeasuresTests: XCTestCase {
 }
 
 struct MockedMeasures: MeasuresType {
+    func getMargins() -> CGFloat {
+        return 100
+    }
+
     let columnsCount = 3
     let defaultRowHeight: CGFloat = 80
     let defaultColumnWidth: CGFloat = 80
