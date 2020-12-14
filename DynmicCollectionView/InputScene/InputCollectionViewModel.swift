@@ -11,13 +11,16 @@ protocol InputViewModelType {
     var currentEditingIndex: Int { get }
     var items: [CollectionDataItem] { get }
     func appendNewRow()
-    func delete(at indexes: [Int])
+    func deleteRow(with id: UUID) -> [IndexPath]
     func shouldShowKeypad(at index: Int) -> Bool
-    func textChanged(_ text: String, at index: Int)
+    func textChanged(_ text: CollectionDataItem, at index: Int)
 }
 
 final class InputViewModel: InputViewModelType {
-    private var newCollectionRow: [CollectionDataItem] { [.input(""), .input(""), .input(""), .delete] }
+    private var newCollectionRow: [CollectionDataItem] { [.input(text: "", id: UUID()),
+                                                          .input(text: "", id: UUID()),
+                                                          .input(text: "", id: UUID()),
+                                                          .delete(UUID())] }
 
     var items: [CollectionDataItem] = []
     var currentEditingIndex = -1
@@ -26,20 +29,20 @@ final class InputViewModel: InputViewModelType {
         items.append(contentsOf: newCollectionRow)
     }
 
-    func delete(at indexes: [Int]) {
-        guard let start = indexes.min(),
-              let end = indexes.max() else {
-            return
-        }
-        items.removeSubrange(start ... end)
+    func deleteRow(with id: UUID) -> [IndexPath] {
+        guard let index = items.firstIndex(of: .delete(id)) else { return [] }
+        let offset = items.distanceTo(to: index)
+        let start = offset - 3
+        items.removeSubrange(start ... offset)
+        return (start ... offset).map { IndexPath(position: $0) }
     }
 
     func shouldShowKeypad(at index: Int) -> Bool {
         return index == currentEditingIndex
     }
 
-    func textChanged(_ text: String, at index: Int) {
+    func textChanged(_ text: CollectionDataItem, at index: Int) {
         currentEditingIndex = index
-        items[index] = .input(text)
+        items[index] = text
     }
 }
