@@ -80,7 +80,7 @@ final class InputCollectionController: KeyboardHandlerController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        headerView.updateLabelsWidth(with: measures.columnWidths)
+        updateMeasure(with: collectionView.bounds.width)
     }
 
     private func addNewRow() {
@@ -100,7 +100,14 @@ final class InputCollectionController: KeyboardHandlerController {
 
     override func viewWillTransition(to size: CGSize,
                                      with coordinator: UIViewControllerTransitionCoordinator) {
-        measures.update(screenWidth: size.width)
+        super.viewWillTransition(to: size, with: coordinator)
+        let padding = size.width < size.height ? 0 : view.safeAreaInsets.top + view.safeAreaInsets.bottom
+        updateMeasure(with: size.width - padding)
+    }
+
+    private func updateMeasure(with width: CGFloat) {
+        measures.update(screenWidth: width)
+        headerView.updateLabelsWidth(with: measures.columnWidths)
         collectionView.collectionViewLayout.invalidateLayout()
     }
 }

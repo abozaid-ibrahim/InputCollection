@@ -16,16 +16,16 @@ extension InputCollectionController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch viewModel.items[indexPath.row] {
-        case .delete:
+        case let .delete(id):
             let cell = collectionView.dequeue(cell: DeleteCell.self, for: indexPath)
-            cell.set(onTap: { [unowned self] in self.delete(row: indexPath.row) })
+            cell.set(onTap: { [unowned self] in self.deleteRow(with: id) })
             return cell
-        case let .input(text):
+        case let .input(text, id):
             let cell = collectionView.dequeue(cell: InputCollectionCell.self, for: indexPath)
             cell.set(text: text,
                      onDoubleTap: { [unowned self] in self.squeese(row: indexPath.row) },
                      onPinch: { [unowned self] in self.scale(cell: cell, at: indexPath, with: $0) },
-                     onTextChanged: { [unowned self] in self.textDidChange($0, indexPath, $1) })
+                     onTextChanged: { [unowned self] in self.textDidChange(.input(text: $0, id: id), indexPath, $1) })
             return cell
         }
     }
@@ -38,12 +38,13 @@ extension InputCollectionController: UICollectionViewDataSource {
 }
 
 private extension InputCollectionController {
-    func delete(row: Int) {
-        let indexes = measures.indexesOfDelete(for: row)
+    func deleteRow(with id: UUID) {
+        let indexes = viewModel.deleteRow(with: id)
+        guard let row = indexes.first?.row else {
+            return
+        }
         measures.deleteRow(with: row)
-        viewModel.delete(at: indexes.map { $0.row })
-//        collectionView.deleteItems(at: indexes)
-        collectionView.reloadData()
+        collectionView.deleteItems(at: indexes)
     }
 
     func squeese(row: Int) {
@@ -64,8 +65,8 @@ private extension InputCollectionController {
         }
     }
 
-    func textDidChange(_ text: String, _ index: IndexPath, _ height: CGFloat) {
-        viewModel.textChanged(text, at: index.row)
+    func textDidChange(_ item: CollectionDataItem, _ index: IndexPath, _ height: CGFloat) {
+        viewModel.textChanged(item, at: index.row)
         guard measures.set(height: height, for: index.row) else { return }
         reloadRow(row: index.row)
     }
@@ -81,10 +82,11 @@ extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        guard indexPath.row < viewModel.items.count else {
-            return .zero
-        }
         return measures.cellSize(for: indexPath,
-                                 isDeleteCell: viewModel.items[indexPath.row] == .delete)
+                                 isDeleteCell: viewModel.items[indexPath.row].isDelete)
     }
+}
+
+extension Collection {
+    func distanceTo(to index: Index) -> Int { distance(from: startIndex, to: index) }
 }
