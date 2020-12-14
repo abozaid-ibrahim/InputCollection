@@ -48,4 +48,4 @@ This application uses the Model-View-ViewModel (referred to as MVVM) UI architec
 * Extensions: Group of app extensions.
 ## Todo
 - [ ] fix ui glitch of unscaling
-- [ ] fix delete item animation
+- [ ] fix delete item animation, I would recommend to use diffing algorithm.
