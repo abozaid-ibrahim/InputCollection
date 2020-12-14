@@ -27,7 +27,11 @@ final class InputViewModel: InputViewModelType {
     }
 
     func delete(at indexes: [Int]) {
-        items.removeSubrange(indexes.indices)
+        guard let start = indexes.min(),
+              let end = indexes.max() else {
+            return
+        }
+        items.removeSubrange(start ... end)
     }
 
     func shouldShowKeypad(at index: Int) -> Bool {

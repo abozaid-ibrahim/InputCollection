@@ -43,10 +43,13 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderView {
         label.isUserInteractionEnabled = true
         label.text = title
         label.translatesAutoresizingMaskIntoConstraints = false
-        let widthConstrain = label.widthAnchor.constraint(equalToConstant: (bounds.width / CGFloat(items.count)) - spacing)
+        let widthConstrain = label.widthAnchor.constraint(equalToConstant: (bounds.width / CGFloat(items.count)) )
         widthConstrain.identifier = widthConstrainID
         widthConstrain.isActive = true
-        label.backgroundColor = .themeLightGray
+        label.backgroundColor = UIColor.brown.withAlphaComponent(0.2)
+        label.layer.borderWidth = spacing
+        label.layer.borderColor = UIColor.themeLightGray.cgColor
+
         return label
     }
 
@@ -70,7 +73,7 @@ final class InputCollectionHeader: UIView, InputCollectionHeaderView {
             guard let widthConstrain = label.constraints.first(where: { $0.identifier == widthConstrainID }) else {
                 continue
             }
-            widthConstrain.constant = widths[index] - spacing
+            widthConstrain.constant = widths[index]
             index += 1
         }
     }

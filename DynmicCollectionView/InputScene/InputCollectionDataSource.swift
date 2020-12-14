@@ -42,7 +42,7 @@ private extension InputCollectionController {
         let indexes = measures.indexesOfDelete(for: row)
         measures.deleteRow(with: row)
         viewModel.delete(at: indexes.map { $0.row })
-        collectionView.deleteItems(at: indexes)
+//        collectionView.deleteItems(at: indexes)
         collectionView.reloadData()
     }
 
@@ -81,6 +81,9 @@ extension InputCollectionController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard indexPath.row < viewModel.items.count else {
+            return .zero
+        }
         return measures.cellSize(for: indexPath,
                                  isDeleteCell: viewModel.items[indexPath.row] == .delete)
     }
