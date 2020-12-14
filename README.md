@@ -8,10 +8,6 @@
 </p>
 
 Collection view acts like xcel sheet to take any text input
- 
- <p align="center">
- <img src="https://github.com/abuzeid-ibrahim/DynamicCollection/blob/master/demo.gif" width="50%">
- </p>
 
 ## Getting Started
 - If this is your first time encountering swift/ios development, please follow [the instructions](https://developer.apple.com/support/xcode/) to set up XCode and Swift on your Mac.
@@ -48,4 +44,4 @@ This application uses the Model-View-ViewModel (referred to as MVVM) UI architec
 * Extensions: Group of app extensions.
 ## Todo
 - [ ] fix ui glitch of unscaling
-- [ ] fix delete item animation, I would recommend to use diffing algorithm.
+- [x] fix delete item animation.
